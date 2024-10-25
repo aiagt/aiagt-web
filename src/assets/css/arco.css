@@ -1,0 +1,42 @@
+.arco-input-wrapper,
+.arco-select-view-single,
+.arco-select-view-multiple {
+    @apply !bg-transparent !border-gray-300 !rounded-lg !py-[1.5px] !px-3 mb-[1px] !font-normal;
+}
+
+.arco-textarea-wrapper {
+    @apply !bg-transparent !border-gray-300 !rounded-lg !py-[1.5px] !font-normal;
+}
+
+.arco-input-wrapper.arco-input-focus,
+.arco-textarea-wrapper.arco-textarea-focus,
+.arco-select-view-single.arco-select-view-focus,
+.arco-select-view-multiple.arco-select-view-focus {
+    @apply !border-blue-700 !shadow-blue-100 !shadow-sm;
+}
+
+.arco-input-error,
+.arco-textarea-error,
+.arco-select-view-error {
+    @apply !border-red-500;
+}
+
+.arco-select-dropdown {
+    @apply !rounded-lg;
+}
+
+.arco-select-dropdown .arco-checkbox-label {
+    @apply font-normal;
+}
+
+.arco-empty-image {
+    @apply !text-xl;
+}
+
+.arco-select-view-multiple .arco-select-view-inner .arco-select-view-tag {
+    @apply !bg-gray-100 !border-0 !rounded-[0.25rem];
+}
+
+.arco-select-view-multiple .arco-select-view-tag .arco-tag-close-btn > svg {
+    @apply !text-xs !text-gray-400;
+}
