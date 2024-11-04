@@ -3,14 +3,13 @@ import { computed, reactive } from 'vue'
 
 export const usePersonalStore = defineStore('personal', () => {
   const tabs = reactive([
-    { title: 'Application', focused: true },
-    { title: 'Plugin', focused: false },
-    { title: 'Workflow', focused: false },
-    { title: 'Knowledge', focused: false }
+    { title: 'Application', focused: true, link: '/personal/application' },
+    { title: 'Plugin', focused: false, link: '/personal/plugin' },
+    { title: 'Workflow', focused: false, link: '#' },
+    { title: 'Knowledge', focused: false, link: '#' }
   ])
 
   function focus(idx: number) {
-    console.log('focus')
     for (let i = 0; i < tabs.length; i++) {
       tabs[i].focused = i === idx
     }

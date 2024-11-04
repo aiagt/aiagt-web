@@ -6,7 +6,7 @@ export const modelValueProps = () => {
 
 export const modelValueEmits = () => ['update:modelValue', 'change']
 
-export function updateModelValue(emits: EmitFn, modelValue: String) {
+export function updateModelValue(emits: EmitFn, modelValue: string | undefined) {
   emits('update:modelValue', modelValue)
   emits('change', modelValue)
 }

@@ -1,8 +1,10 @@
+import { format } from 'date-fns'
+
 export class Time {
   timestamp?: number
 
-  constructor(timestamp?: number) {
-    this.timestamp = timestamp
+  constructor(time: { timestamp?: number }) {
+    this.timestamp = time?.timestamp
   }
 
   date(): Date | null {
@@ -15,6 +17,12 @@ export class Time {
     }
 
     return this.timestamp < Date.now()
+  }
+
+  string(): string {
+    const date = this.date()
+    if (!date) return ''
+    return format(date, 'yyyy-MM-dd HH:mm:ss')
   }
 }
 

@@ -2,12 +2,16 @@ import axios from 'axios'
 import { Message } from '@arco-design/web-vue'
 import '@arco-design/web-vue/es/message/style/css.js'
 import { useAuthStore } from '@/store/auth.ts'
+import JSONBigInt from 'json-bigint'
 
 const authStore = useAuthStore()
 
 const instance = axios.create({
   baseURL: '/api',
-  timeout: 30000
+  timeout: 60000,
+  transformResponse: (data: any) => {
+    return JSONBigInt.parse(data)
+  }
 })
 
 instance.interceptors.request.use(

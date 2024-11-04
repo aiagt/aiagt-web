@@ -8,7 +8,7 @@ export const useHomeStore = defineStore('home', () => {
     { title: 'Knowledge', link: '#', icon: 'knowledge', position: 'top' },
     { title: 'Personal', link: '/personal', icon: 'home', position: 'top' },
     { title: 'Development', link: '#', icon: 'develop', position: 'top' },
-    { title: 'User', link: '#', icon: 'user', position: 'bottom' },
+    { title: 'User', link: '/auth', icon: 'user', position: 'bottom' },
     { title: 'Settings', link: '#', icon: 'settings', position: 'bottom' }
   ])
 

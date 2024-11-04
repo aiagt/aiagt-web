@@ -55,7 +55,7 @@ export const useAuthStore = defineStore('auth', () => {
   function getToken(): string | null {
     if (!token.value || !expire.value) return null
 
-    const exp = new Time(expire.value.timestamp)
+    const exp = new Time(expire.value)
     if (exp.expired()) return null
 
     return token.value

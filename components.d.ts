@@ -10,6 +10,7 @@ declare module 'vue' {
     AiagtBorder: typeof import('./src/components/aiagt/aiagt-border.vue')['default']
     AiagtLong: typeof import('./src/components/aiagt/aiagt-long.vue')['default']
     AiagtText: typeof import('./src/components/aiagt/aiagt-text.vue')['default']
+    Editor: typeof import('./src/components/editor/editor.vue')['default']
     Input: typeof import('./src/components/input/input.vue')['default']
     InputGroup: typeof import('./src/components/input-group/input-group.vue')['default']
     Modal: typeof import('./src/components/modal/modal.vue')['default']

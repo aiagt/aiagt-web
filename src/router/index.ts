@@ -14,8 +14,11 @@ const Login = () => import('@v/login/login.vue')
 
 const HomeLayout = () => import('@/layout/home/home-layout.vue')
 const Personal = () => import('@v/personal/personal.vue')
+const PersonalApplication = () => import('@v/personal/application.vue')
+const PersonalPlugin = () => import('@v/personal/plugin.vue')
 
 const Application = () => import('@v/application/application.vue')
+const Plugin = () => import('@v/plugin/plugin.vue')
 
 const routes: RouteRecordRaw[] = [
   {
@@ -41,14 +44,32 @@ const routes: RouteRecordRaw[] = [
         component: Personal
       },
       {
-        path: 'personal',
-        component: Personal
+        path: 'personal/',
+        component: Personal,
+        children: [
+          {
+            path: '',
+            component: PersonalApplication
+          },
+          {
+            path: 'application',
+            component: PersonalApplication
+          },
+          {
+            path: 'plugin',
+            component: PersonalPlugin
+          }
+        ]
       }
     ]
   },
   {
     path: '/app/dev/:id',
     component: Application
+  },
+  {
+    path: '/plugin/dev/:key',
+    component: Plugin
   }
 ]
 

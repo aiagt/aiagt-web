@@ -65,7 +65,7 @@ const homeStore = useHomeStore()
       </sidebar>
     </div>
 
-    <div class="w-full h-full overflow-auto bg-white flex-1 rounded-lg">
+    <div class="w-full h-full overflow-auto bg-white flex-1 rounded-xl min-w-[520px]">
       <router-view />
     </div>
   </div>
