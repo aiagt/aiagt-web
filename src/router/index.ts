@@ -17,8 +17,11 @@ const Personal = () => import('@v/personal/personal.vue')
 const PersonalApplication = () => import('@v/personal/application.vue')
 const PersonalPlugin = () => import('@v/personal/plugin.vue')
 
+const ApplicationDev = () => import('@v/personal/application/application.vue')
+const PluginDev = () => import('@v/personal/plugin/plugin.vue')
+
+const AppChat = () => import('@v/app-chat/app-chat.vue')
 const Application = () => import('@v/application/application.vue')
-const Plugin = () => import('@v/plugin/plugin.vue')
 
 const routes: RouteRecordRaw[] = [
   {
@@ -41,7 +44,11 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
-        component: Personal
+        component: Application
+      },
+      {
+        path: 'application/',
+        component: Application
       },
       {
         path: 'personal/',
@@ -64,12 +71,16 @@ const routes: RouteRecordRaw[] = [
     ]
   },
   {
-    path: '/app/dev/:id',
-    component: Application
+    path: '/app/space/:id',
+    component: ApplicationDev
   },
   {
-    path: '/plugin/dev/:key',
-    component: Plugin
+    path: '/plugin/space/:key',
+    component: PluginDev
+  },
+  {
+    path: '/app/:id',
+    component: AppChat
   }
 ]
 

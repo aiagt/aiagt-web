@@ -3,6 +3,8 @@ import { ref } from 'vue'
 import { User } from '@/models/user'
 import { getLocalStorage, removeLocalStorage, setLocalStorage } from '@/utils/local_storage.ts'
 import { Time } from '@/models/base'
+import { Message } from '@arco-design/web-vue'
+import router from '@/router'
 
 export enum Progress {
   SEND_CAPTCHA,
@@ -33,12 +35,24 @@ export const useAuthStore = defineStore('auth', () => {
     })
   }
 
+  function verifyLoggedIn(): boolean {
+    if (!userinfo?.value?.id) {
+      Message.error('please login first')
+      router.push('/auth')
+      return false
+    }
+
+    return true
+  }
+
   function logout() {
     token.value = ''
     userinfo.value = {} as User
 
     removeLocalStorage(userTokenKey)
     removeLocalStorage(userInfoKey)
+
+    router.push('/auth')
   }
 
   function loadUserInfo() {
@@ -63,5 +77,5 @@ export const useAuthStore = defineStore('auth', () => {
 
   loadUserInfo()
 
-  return { progress, email, userinfo, login, logout, loadUserInfo, getToken }
+  return { progress, email, userinfo, login, verifyLoggedIn, logout, loadUserInfo, getToken }
 })

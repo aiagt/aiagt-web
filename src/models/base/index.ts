@@ -26,6 +26,10 @@ export class Time {
   }
 }
 
+export function NewTime(): Time {
+  return new Time({ timestamp: Date.now() })
+}
+
 export interface PaginationReq {
   page?: number;
   page_size?: number;

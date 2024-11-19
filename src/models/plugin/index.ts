@@ -35,6 +35,7 @@ export interface PluginTool {
   name: string;
   description: string;
   plugin_id: number;
+  plugin?: Plugin;
   request_type: string;
   response_type: string;
   api_url: string;
@@ -157,4 +158,12 @@ export interface TestPluginToolResp {
   msg: string;
   response: string;
   http_code: string;
+}
+
+export interface ListPluginByToolsReq {
+  tool_ids: number[];
+}
+
+export interface ListPluginByToolsResp {
+  plugins: Plugin[];
 }

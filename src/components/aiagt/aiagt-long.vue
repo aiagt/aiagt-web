@@ -1,9 +1,20 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 
+defineProps<{
+  allowJump?: boolean;
+}>()
+
+const router = useRouter()
 </script>
 
 <template>
-  <svg width="129" height="37" viewBox="0 0 129 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg
+    width="129" height="37" viewBox="0 0 129 37" fill="none" xmlns="http://www.w3.org/2000/svg"
+    @click="() => {
+      if (allowJump) router.push('/')
+    }"
+  >
     <path fill-rule="evenodd" clip-rule="evenodd"
           d="M0 6.14583C0 2.75159 2.75159 0 6.14583 0H30.7292C34.1234 0 36.875 2.75159 36.875 6.14583V30.7292C36.875 34.1234 34.1234 36.875 30.7292 36.875H6.14583C2.75159 36.875 0 34.1234 0 30.7292V6.14583ZM6.14583 2.45833C4.10928 2.45833 2.45833 4.10928 2.45833 6.14583V30.7292C2.45833 32.7656 4.10928 34.4167 6.14583 34.4167H30.7292C32.7656 34.4167 34.4167 32.7656 34.4167 30.7292V6.14583C34.4167 4.10928 32.7656 2.45833 30.7292 2.45833H6.14583Z"
           fill="#416DF1" />

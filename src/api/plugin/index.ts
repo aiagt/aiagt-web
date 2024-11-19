@@ -1,11 +1,11 @@
 import { del, get, post, put } from '@/api/axios'
 import {
   CallPluginToolReq,
-  CreatePluginReq, CreatePluginToolReq, GetPluginByKeyReq,
+  CreatePluginReq, CreatePluginToolReq, GetPluginByKeyReq, ListPluginByToolsReq, ListPluginByToolsResp,
   ListPluginLabelReq,
   ListPluginLabelResp,
   ListPluginReq,
-  ListPluginResp,
+  ListPluginResp, ListPluginToolReq, ListPluginToolResp,
   Plugin, TestPluginToolResp, UpdatePluginReq, UpdatePluginToolReq
 } from '@/models/plugin'
 
@@ -21,6 +21,11 @@ export async function listPluginLabelAPI(req: ListPluginLabelReq): Promise<ListP
 
 export async function createPluginAPI(req: CreatePluginReq): Promise<{}> {
   const resp = await post('/plugin/', req)
+  return Promise.resolve(resp.data)
+}
+
+export async function getPluginByID(id: number): Promise<Plugin> {
+  const resp = await get(`/plugin/${id}`)
   return Promise.resolve(resp.data)
 }
 
@@ -51,5 +56,15 @@ export async function deletePluginToolAPI(id: number): Promise<{}> {
 
 export async function testPluginToolAPI(req: CallPluginToolReq): Promise<TestPluginToolResp> {
   const resp = await post(`/plugin/tool/test`, req)
+  return Promise.resolve(resp.data)
+}
+
+export async function listPluginToolAPI(req: ListPluginToolReq): Promise<ListPluginToolResp> {
+  const resp = await get(`/plugin/tool/list`, req)
+  return Promise.resolve(resp.data)
+}
+
+export async function listPluginByToolsAPI(req: ListPluginByToolsReq): Promise<ListPluginByToolsResp> {
+  const resp = await post(`/plugin/list_by_tools`, req)
   return Promise.resolve(resp.data)
 }

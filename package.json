@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@arco-iconbox/vue-aiagt": "^0.0.5",
+    "@arco-iconbox/vue-aiagt": "^0.0.6",
     "@arco-plugins/vite-vue": "^1.4.5",
     "@guolao/vue-monaco-editor": "^1.5.4",
     "@volar/language-server": "2.4.0-alpha.18",
@@ -19,6 +19,7 @@
     "flyonui": "^1.1.0",
     "json-bigint": "^1.0.0",
     "json-schema-faker": "^0.5.6",
+    "marked": "^15.0.0",
     "pinia": "^2.2.4",
     "quicktype-core": "^23.0.170",
     "unplugin-auto-import": "^0.18.3",

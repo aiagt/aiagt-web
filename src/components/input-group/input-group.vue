@@ -41,7 +41,7 @@ const valid = computed((): boolean => {
     :class="{'!flex-row items-start justify-between': direction === 'horizontal'}"
   >
     <div
-      class="text-[14px] font-medium text-black flex gap-1 items-center"
+      class="text-[13px] font-medium text-black flex gap-1 items-center"
       @click="input?.focus()"
       :class="titleClass"
       :style="titleStyle"

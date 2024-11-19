@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, reactive } from 'vue'
-import { App, ListAppReq, CreateAppReq, AppLabel } from '@/models/app'
-import { createAppAPI, listAppAPI, listAppLabelAPI } from '@/api/app'
+import { App, ListAppReq, CreateAppReq } from '@/models/app'
+import { createAppAPI, listAppAPI } from '@/api/app'
 import { PaginationResp, Time } from '@/models/base'
 import { useRouter } from 'vue-router'
 import Modal from '@c/modal/modal.vue'
@@ -10,21 +10,25 @@ import { Message } from '@arco-design/web-vue'
 import Card from '@v/personal/componets/card.vue'
 import IconInputGroup from '@v/personal/componets/icon-input-group.vue'
 import { usePersonalStore } from '@/store/personal.ts'
+import { useApplicationStore } from '@/store/application.ts'
+import { useAuthStore } from '@/store/auth.ts'
 
 const router = useRouter()
 
 const personalStore = usePersonalStore()
 personalStore.focusByName('Application')
 
+const appStore = useApplicationStore()
+const authStore = useAuthStore()
+
 const listCfg = reactive({
   apps: [] as App[],
-  req: { page: 1, page_size: 20 } as ListAppReq,
+  req: { page: 1, page_size: 20, author_id: authStore.userinfo.id || 0 } as ListAppReq,
   pagination: {} as PaginationResp
 })
 
 const modalConfig = reactive({
   visible: false,
-  appLabels: [] as AppLabel[],
 
   createAppReq: {} as CreateAppReq,
   createAppReqValid: computed((): boolean => {
@@ -58,28 +62,40 @@ async function createApp() {
 }
 
 async function init() {
+  document.title = 'Applications - Aiagt'
+
+  if (!authStore.verifyLoggedIn()) return
+
   const listAppResp = await listAppAPI(listCfg.req)
   listCfg.apps = listAppResp.apps
   listCfg.pagination = listAppResp.pagination
 
-  const listLabelResp = await listAppLabelAPI({ page_size: 10000 })
-  modalConfig.appLabels = listLabelResp.labels
+  appStore.initAppLabels()
 }
 
 init()
 </script>
 
 <template>
-  <div class="flex flex-col gap-5 items-start">
-    <button
-      class="bg-blue-700 text-sm text-white px-3 py-1.5 rounded-md hover:bg-blue-600 active:bg-blue-800 transition"
-      @click="modalConfig.visible = !modalConfig.visible"
-    >
-      <icon-plus :size="14" />
-      Create App
-    </button>
+  <div class="flex flex-col gap-6 items-start">
     <div
-      class="w-full grid grid-cols-1 w2:grid-cols-2 w5:grid-cols-3 w6:grid-cols-4 w8:grid-cols-5 gap-7 min-w-80">
+      class="w-full grid grid-cols-1 w2:grid-cols-2 w5:grid-cols-3 w6:grid-cols-4 w8:grid-cols-5 gap-6 min-w-80"
+    >
+      <card class="bg-[#f8f9fa] !border-[0.5px] !border-gray-200 !p-5">
+        <div class="w-full h-full flex flex-col gap-4 text-gray-500">
+          <div class="text-gray-800 font-medium text-[16px]">Create app</div>
+          <div
+            class="h-full flex flex-col justify-center items-center gap-2 rounded-2xl bg-white border-[0.5px] font-medium py-8 hover:text-blue-600"
+            @click="modalConfig.visible = true"
+          >
+            <div class="text-[16px]">
+              <icon-plus stroke-linecap="round" stroke-linejoin="round" :stroke-width="5" />
+            </div>
+            Create empty app
+          </div>
+        </div>
+      </card>
+
       <card v-for="app of listCfg.apps"
             :id="app.id"
             :name="app.name"
@@ -87,8 +103,10 @@ init()
             :time="new Time(app.updated_at)"
             :description="app.description"
             :labels="app.labels"
-            :link="`/app/dev/${app.id}`"
+            :link="`/app/space/${app.id}`"
+            :link2="`/app/${app.id}`"
       />
+
     </div>
   </div>
 
@@ -129,7 +147,7 @@ init()
           :max-tag-count="8"
           @change="modalConfig.changeLabels"
         >
-          <a-option v-for="label of modalConfig.appLabels" :key="label.id" :value="label.id">
+          <a-option v-for="label of appStore.appLabels" :key="label.id" :value="label.id">
             {{ label.text }}
           </a-option>
         </a-select>

@@ -4,6 +4,8 @@ import { useRouter } from 'vue-router'
 import VerificationCode from '@v/login/components/verification-code.vue'
 import { ref } from 'vue'
 import { loginAPI, registerAPI } from '@/api/user'
+import { onEnter } from '@/utils/event.ts'
+import { Message } from '@arco-design/web-vue'
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -15,6 +17,11 @@ if (!authStore.email?.length) {
 const captcha = ref('')
 
 async function next() {
+  if (captcha.value.length !== 6) {
+    Message.error('Please enter the complete verification code.')
+    return
+  }
+
   switch (authStore.progress) {
     case Progress.LOGIN:
       const loginResp = await loginAPI({
@@ -41,7 +48,7 @@ function back() {
 </script>
 
 <template>
-  <div class="flex flex-col justify-center items-center w-full h-full gap-7">
+  <div class="flex flex-col justify-center items-center w-full h-full gap-8">
 
     <div class="font-medium text-2xl">Verify your email</div>
 
@@ -55,7 +62,7 @@ function back() {
       The verification code has been sent to your email, please enter the six-digit verification code in your email
     </div>
 
-    <verification-code v-model="captcha" />
+    <verification-code v-model="captcha" @complete="next" @keydown.enter="e => onEnter(e, next)" />
 
     <div class="w-full flex flex-col gap-4">
       <button
