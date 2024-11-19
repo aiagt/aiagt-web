@@ -9,15 +9,18 @@ import InputGroup from '@c/input-group/input-group.vue'
 import IconInputGroup from '@v/personal/componets/icon-input-group.vue'
 import { useRouter } from 'vue-router'
 import { usePersonalStore } from '@/store/personal.ts'
+import { useAuthStore } from '@/store/auth.ts'
 
 const router = useRouter()
 
 const personalStore = usePersonalStore()
 personalStore.focusByName('Plugin')
 
+const authStore = useAuthStore()
+
 const listConfig = reactive({
   plugins: [] as Plugin[],
-  req: { page: 1, page_size: 20 } as ListPluginReq,
+  req: { page: 1, page_size: 20, author_id: authStore.userinfo.id || 0 } as ListPluginReq,
   pagination: {} as PaginationResp
 })
 
@@ -57,6 +60,10 @@ async function createPlugin() {
 }
 
 async function init() {
+  document.title = 'Plugins - Aiagt'
+
+  if (!authStore.verifyLoggedIn()) return
+
   const listResp = await listPluginAPI(listConfig.req)
   listConfig.plugins = listResp.plugins
   listConfig.pagination = listResp.pagination
@@ -70,15 +77,22 @@ init()
 
 <template>
   <div class="flex flex-col gap-5 items-start">
-    <button
-      class="bg-blue-700 text-sm text-white px-3 py-1.5 rounded-md hover:bg-blue-600 active:bg-blue-800 transition"
-      @click="modalConfig.visible = !modalConfig.visible"
-    >
-      <icon-plus :size="14" />
-      Create Plugin
-    </button>
     <div
-      class="w-full grid grid-cols-1 w2:grid-cols-2 w5:grid-cols-3 w6:grid-cols-4 w8:grid-cols-5 gap-7 min-w-80">
+      class="w-full grid grid-cols-1 w2:grid-cols-2 w5:grid-cols-3 w6:grid-cols-4 w8:grid-cols-5 gap-6 min-w-80">
+      <card class="bg-[#f8f9fa] !border-[0.5px] !border-gray-200 !p-5">
+        <div class="w-full h-full flex flex-col gap-4 text-gray-500">
+          <div class="text-gray-800 font-medium text-[16px]">Create plugin</div>
+          <div
+            class="h-full flex flex-col justify-center items-center gap-2 rounded-2xl bg-white border-[0.5px] font-medium py-8 hover:text-blue-600"
+            @click="modalConfig.visible = true"
+          >
+            <div class="text-[16px]">
+              <icon-plus stroke-linecap="round" stroke-linejoin="round" :stroke-width="5" />
+            </div>
+            Create empty plugin
+          </div>
+        </div>
+      </card>
       <card v-for="plugin of listConfig.plugins"
             :id="plugin.id"
             :name="plugin.name"
@@ -86,7 +100,7 @@ init()
             :time="new Time(plugin.updated_at)"
             :description="plugin.description"
             :labels="plugin.labels"
-            :link="`/plugin/dev/${plugin.key}`"
+            :link="`/plugin/space/${plugin.key}`"
       />
     </div>
   </div>

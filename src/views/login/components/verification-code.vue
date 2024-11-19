@@ -13,7 +13,7 @@ const props = defineProps({
   }
 })
 
-const emits = defineEmits(['update:modelValue', 'change'])
+const emits = defineEmits(['update:modelValue', 'change', 'complete'])
 
 const filledValue = computed(() => {
   const chars = props.modelValue.split('')
@@ -43,6 +43,7 @@ function updateValue() {
   const value = innerValue.value.join('').trim()
   emits('update:modelValue', value)
   emits('change', value)
+  if (value.length === 6) emits('complete', value)
   reFocus()
 }
 

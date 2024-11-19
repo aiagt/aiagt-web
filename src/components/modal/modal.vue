@@ -11,6 +11,7 @@ withDefaults(defineProps<{
   small?: boolean;
   modalClass?: string;
   modalStyle?: CSSProperties;
+  hideFooter?: boolean;
 }>(), {
   title: '',
   visible: false,
@@ -19,7 +20,8 @@ withDefaults(defineProps<{
   allowConfirm: true,
   width: 420,
   small: false,
-  modalClass: ''
+  modalClass: '',
+  hideFooter: false
 })
 
 const emits = defineEmits(['update:visible', 'cancel', 'confirm'])
@@ -38,6 +40,7 @@ function changeVisible(v: boolean) {
     :modal-style="modalStyle"
     @cancel="emits('cancel')"
     @ok="emits('confirm')"
+    :footer="!hideFooter"
   >
     <template #title>
       <slot name="header">
