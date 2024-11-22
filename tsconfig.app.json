@@ -24,13 +24,13 @@
     /* Path alias */
     "paths": {
       "@/*": [
-        "src/*"
+        "./src/*"
       ],
       "@c/*": [
-        "src/components/*"
+        "./src/components/*"
       ],
       "@v/*": [
-        "src/views/*"
+        "./src/views/*"
       ]
     }
   },
