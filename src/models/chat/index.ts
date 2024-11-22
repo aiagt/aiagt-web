@@ -91,7 +91,8 @@ export interface UpdateMessageReq {
   message: MessageContent;
 }
 
-export interface ListMessageReq extends PaginationReq {
+export interface ListMessageReq {
+  pagination?: PaginationReq;
   conversation_id: number;
 }
 
@@ -105,7 +106,8 @@ export interface UpdateConversationReq {
   title: string;
 }
 
-export interface ListConversationReq extends PaginationReq {
+export interface ListConversationReq {
+  pagination?: PaginationResp;
   app_id: number;
 }
 

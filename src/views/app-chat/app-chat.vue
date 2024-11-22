@@ -37,8 +37,6 @@ function loadConversations() {
   }).then(resp => {
     conversations.splice(0, conversations.length)
     conversations.push(...resp.conversations)
-
-    if (conversations.length > 0) focusedConversationID.value = conversations[0].id
   })
 }
 

@@ -30,7 +30,7 @@ async function searchPlugin() {
 async function init() {
   await searchPlugin()
 
-  const listPluginLabelResp = await listPluginLabelAPI({ page_size: 10000 })
+  const listPluginLabelResp = await listPluginLabelAPI({ pagination: { page_size: 10000 } })
   pluginLabels.push(...listPluginLabelResp.labels)
 }
 

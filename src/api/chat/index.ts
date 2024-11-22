@@ -25,7 +25,7 @@ export function chatAPI(
     headers['Authorization'] = `Bearer ${token}`
   }
 
-  sse(`/api/chat/chat`, req, headers, message => {
+  sse(`${import.meta.env.VITE_API_BASE_URL}/chat/chat`, req, headers, message => {
     switch (message.event) {
       case 'chunk':
         onMessage(message.event, JSON.parse(message.data) as ChatResp)

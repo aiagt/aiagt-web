@@ -315,7 +315,7 @@ async function init() {
 
   document.title = `${plugin.name} - Plugin -Aiagt`
 
-  const listPluginLabelResp = await listPluginLabelAPI({ page_size: 10000 })
+  const listPluginLabelResp = await listPluginLabelAPI({ pagination: { page_size: 10000 } })
   pluginConfig.labels = listPluginLabelResp.labels
 }
 

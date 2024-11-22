@@ -6,7 +6,7 @@ import { reactive } from 'vue'
 export const useModelStore = defineStore('model', () => {
   const modelOptions = reactive([] as Model[])
 
-  listModelAPI({ page_size: 100 }).then(resp => {
+  listModelAPI({ pagination: { page_size: 100 } }).then(resp => {
     modelOptions.push(...resp.models)
   })
 

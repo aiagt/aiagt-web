@@ -6,7 +6,7 @@ import JSONBigInt from 'json-bigint'
 const authStore = useAuthStore()
 
 const instance = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 60000,
   transformResponse: (data: any) => {
     return JSONBigInt.parse(data)

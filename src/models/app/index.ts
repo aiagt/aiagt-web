@@ -82,7 +82,8 @@ export interface UpdateAppReq {
   model_config?: ModelConfig;
 }
 
-export interface ListAppReq extends PaginationReq {
+export interface ListAppReq {
+  pagination?: PaginationReq;
   author_id?: number;
   name?: string;
   description?: string;
@@ -105,7 +106,8 @@ export interface AppLabel {
   created_at: Time;
 }
 
-export interface ListAppLabelReq extends PaginationReq {
+export interface ListAppLabelReq {
+  pagination?: PaginationReq;
   text?: string;
 }
 

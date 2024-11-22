@@ -2,7 +2,7 @@
 import { App } from '@/models/app'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { chatAPI, deleteMessageAPI, initDevelopAPI, listMessageAPI, updateMessageAPI } from '@/api/chat'
-import { ChatResp, Message, MessageContent, MessageRole, MessageType } from '@/models/chat'
+import { ChatResp, ListMessageReq, Message, MessageContent, MessageRole, MessageType } from '@/models/chat'
 import { Message as ArcoMessage } from '@arco-design/web-vue'
 import { NewTime, Time } from '@/models/base'
 import { mark } from '@/assets/marked'
@@ -82,7 +82,7 @@ watch(computed(() => props.conversation_id), async () => {
   conversation.id = props.conversation_id
 
   if (props.conversation_id) {
-    const resp = await listMessageAPI({ conversation_id: props.conversation_id })
+    const resp = await listMessageAPI({ conversation_id: props.conversation_id } as ListMessageReq)
     conversation.messages.splice(0, conversation.messages.length)
     conversation.messages.push(...resp.messages)
   } else {

@@ -23,7 +23,7 @@ const authStore = useAuthStore()
 
 const listCfg = reactive({
   apps: [] as App[],
-  req: { page: 1, page_size: 20, author_id: authStore.userinfo.id || 0 } as ListAppReq,
+  req: { pagination: { page: 1, page_size: 20 }, author_id: authStore.userinfo.id || 0 } as ListAppReq,
   pagination: {} as PaginationResp
 })
 

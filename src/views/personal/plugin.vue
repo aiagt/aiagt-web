@@ -20,7 +20,7 @@ const authStore = useAuthStore()
 
 const listConfig = reactive({
   plugins: [] as Plugin[],
-  req: { page: 1, page_size: 20, author_id: authStore.userinfo.id || 0 } as ListPluginReq,
+  req: { pagination: { page: 1, page_size: 20 }, author_id: authStore.userinfo.id || 0 } as ListPluginReq,
   pagination: {} as PaginationResp
 })
 
@@ -68,7 +68,7 @@ async function init() {
   listConfig.plugins = listResp.plugins
   listConfig.pagination = listResp.pagination
 
-  const listLabelResp = await listPluginLabelAPI({ page_size: 10000 })
+  const listLabelResp = await listPluginLabelAPI({ pagination: { page_size: 10000 } })
   modalConfig.pluginLabels = listLabelResp.labels
 }
 

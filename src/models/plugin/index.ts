@@ -55,7 +55,8 @@ export interface GetPluginByKeyReq {
   key: string;
 }
 
-export interface ListPluginLabelReq extends PaginationReq {
+export interface ListPluginLabelReq {
+  pagination?: PaginationReq;
   text?: string;
 }
 
@@ -95,7 +96,8 @@ export interface UpdatePluginReq {
   logo?: string;
 }
 
-export interface ListPluginReq extends PaginationReq {
+export interface ListPluginReq {
+  pagination?: PaginationResp;
   author_id?: number;
   name?: string;
   description?: string;

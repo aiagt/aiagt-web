@@ -44,7 +44,8 @@ export interface UpdateModelReq {
   output_price: string;
 }
 
-export interface ListModelReq extends PaginationReq {
+export interface ListModelReq {
+  pagination?: PaginationReq;
   name?: string;
   source?: string;
 }
