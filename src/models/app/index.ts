@@ -1,5 +1,6 @@
 import { PaginationReq, PaginationResp, Time } from '@/models/base'
 import { User } from '@/models/user'
+import { PluginTool } from '@/models/plugin'
 
 export interface App {
   id: number;
@@ -14,6 +15,7 @@ export interface App {
   home_page: string;
   preset_questions: string[];
   tool_ids: number[];
+  tools: PluginTool[];
   logo: string;
   author_id: number;
   author?: User;
@@ -80,7 +82,8 @@ export interface UpdateAppReq {
   model_config?: ModelConfig;
 }
 
-export interface ListAppReq extends PaginationReq {
+export interface ListAppReq {
+  pagination?: PaginationReq;
   author_id?: number;
   name?: string;
   description?: string;
@@ -103,11 +106,26 @@ export interface AppLabel {
   created_at: Time;
 }
 
-export interface ListAppLabelReq extends PaginationReq{
+export interface ListAppLabelReq {
+  pagination?: PaginationReq;
   text?: string;
 }
 
 export interface ListAppLabelResp {
   pagination: PaginationResp;
   labels: AppLabel[];
+}
+
+export interface GetAppByIDReq {
+  id: number;
+  unfold?: boolean;
+}
+
+export interface GetAppByIDResp {
+  app: App;
+  ext?: GetAppByIDRespExtend;
+}
+
+export interface GetAppByIDRespExtend {
+  private_tools_count: number;
 }

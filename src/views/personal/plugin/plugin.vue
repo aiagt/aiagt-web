@@ -13,10 +13,10 @@ import { computed, reactive, ref, watch } from 'vue'
 import { CreatePluginToolReq, Plugin, PluginLabel, PluginSecret, PluginTool } from '@/models/plugin'
 import { Time } from '@/models/base'
 import InputGroup from '@c/input-group/input-group.vue'
-import Params from '@v/plugin/components/params.vue'
-import CollapseEditorTitle from '@v/plugin/components/collapse-editor-title.vue'
+import Params from '@v/personal/plugin/components/params.vue'
+import CollapseEditorTitle from '@v/personal/plugin/components/collapse-editor-title.vue'
 import { Message } from '@arco-design/web-vue'
-import Secrets from '@v/plugin/components/secrets.vue'
+import Secrets from '@v/personal/plugin/components/secrets.vue'
 import Modal from '@c/modal/modal.vue'
 import IconInputGroup from '@v/personal/componets/icon-input-group.vue'
 import { generateSchemaFromRaw, JSONSchema } from '@/utils/json_schema.ts'
@@ -313,7 +313,9 @@ async function init() {
   resetPluginInfo()
   resetPluginSecrets()
 
-  const listPluginLabelResp = await listPluginLabelAPI({ page_size: 10000 })
+  document.title = `${plugin.name} - Plugin -Aiagt`
+
+  const listPluginLabelResp = await listPluginLabelAPI({ pagination: { page_size: 10000 } })
   pluginConfig.labels = listPluginLabelResp.labels
 }
 

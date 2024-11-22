@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { Message } from '@arco-design/web-vue'
 import '@arco-design/web-vue/es/message/style/css.js'
 import { useAuthStore } from '@/store/auth.ts'
 import JSONBigInt from 'json-bigint'
@@ -7,7 +6,7 @@ import JSONBigInt from 'json-bigint'
 const authStore = useAuthStore()
 
 const instance = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 60000,
   transformResponse: (data: any) => {
     return JSONBigInt.parse(data)
@@ -31,9 +30,7 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   (response) => {
     if (response.status !== 200 || response.data.code !== 0) {
-      Message.error(response.data.msg)
-
-      return Promise.reject(response.data.msg)
+      return Promise.reject(response.data)
     }
 
     return response

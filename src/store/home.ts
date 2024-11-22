@@ -3,12 +3,12 @@ import { reactive, ref } from 'vue'
 
 export const useHomeStore = defineStore('home', () => {
   const tabList = reactive([
-    { title: 'Application', link: '#', icon: 'app', position: 'top' },
+    { title: 'Application', link: '/application', icon: 'app', position: 'top' },
     { title: 'Plugin', link: '#', icon: 'plugin', position: 'top' },
     { title: 'Knowledge', link: '#', icon: 'knowledge', position: 'top' },
     { title: 'Personal', link: '/personal', icon: 'home', position: 'top' },
     { title: 'Development', link: '#', icon: 'develop', position: 'top' },
-    { title: 'User', link: '/auth', icon: 'user', position: 'bottom' },
+    { title: 'User', link: '#', icon: 'user', position: 'bottom' },
     { title: 'Settings', link: '#', icon: 'settings', position: 'bottom' }
   ])
 

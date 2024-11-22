@@ -21,10 +21,15 @@ const router = useRouter()
       :key="tab.title"
       class="flex gap-2.5 px-3 py-[0.435rem] items-center rounded-[0.435rem] hover:bg-white cursor-pointer
               text-gray-500 stroke-gray-500 transition duration-300 font-semibold"
-      :class="{'stroke-blue-700 bg-white hover:bg-white': homeStore.isFocused(i)}"
-      @click="homeStore.focusTab(i); router.push({path: tab.link})"
+      :class="{'stroke-blue-700 bg-white hover:bg-white': homeStore.isFocused(i), '!cursor-not-allowed': tab.link == '#'}"
+      @click="() => {
+        if (tab.link != '#') {
+          homeStore.focusTab(i)
+         router.push({path: tab.link})
+        }
+      }"
     >
-      <slot name="icons" :icon="tab.icon" :focused="homeStore.isFocused(i)"></slot>
+      <slot name="icons" :icon="tab.icon" :focused="homeStore.isFocused(i)" />
 
       <div
         class="text-sm font-light transition duration-300"
@@ -34,6 +39,7 @@ const router = useRouter()
         {{ tab.title }}
       </div>
     </div>
+    <slot />
   </div>
 </template>
 

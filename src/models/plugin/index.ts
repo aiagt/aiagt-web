@@ -35,6 +35,7 @@ export interface PluginTool {
   name: string;
   description: string;
   plugin_id: number;
+  plugin?: Plugin;
   request_type: string;
   response_type: string;
   api_url: string;
@@ -54,7 +55,8 @@ export interface GetPluginByKeyReq {
   key: string;
 }
 
-export interface ListPluginLabelReq extends PaginationReq {
+export interface ListPluginLabelReq {
+  pagination?: PaginationReq;
   text?: string;
 }
 
@@ -94,7 +96,8 @@ export interface UpdatePluginReq {
   logo?: string;
 }
 
-export interface ListPluginReq extends PaginationReq {
+export interface ListPluginReq {
+  pagination?: PaginationResp;
   author_id?: number;
   name?: string;
   description?: string;
@@ -157,4 +160,12 @@ export interface TestPluginToolResp {
   msg: string;
   response: string;
   http_code: string;
+}
+
+export interface ListPluginByToolsReq {
+  tool_ids: number[];
+}
+
+export interface ListPluginByToolsResp {
+  plugins: Plugin[];
 }

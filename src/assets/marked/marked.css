@@ -1,0 +1,115 @@
+.marked {
+    @apply flex flex-col gap-2 leading-5 max-w-full;
+    @apply text-[#202328] text-[13px];
+
+    /* order list and un order list */
+
+    ol, ul {
+        @apply flex flex-col gap-2;
+
+        li {
+            @apply pl-2 ml-6;
+        }
+
+        li::marker {
+            @apply text-blue-600;
+        }
+
+        li > * {
+            @apply mb-2;
+        }
+
+        li > *:last-child {
+            @apply mb-0;
+        }
+    }
+
+    ol {
+        @apply list-decimal;
+
+        li:nth-child(-n+9) {
+            @apply ml-6;
+        }
+
+
+        li:nth-child(n+10) {
+            @apply ml-8;
+        }
+
+        li:nth-child(n+100) {
+            @apply ml-10;
+        }
+    }
+
+    ul {
+        @apply list-disc;
+    }
+
+    /* hyper link */
+
+    a {
+        @apply text-blue-500;
+    }
+
+    a:hover {
+        @apply underline underline-offset-2 decoration-blue-600;
+    }
+
+    /* code */
+
+    pre {
+        @apply bg-[#f5f6f7] rounded-lg border border-gray-200;
+        @apply text-xs w-full text-wrap;
+
+        .code-language {
+            @apply rounded-t-lg bg-[#fafbfc] border-b border-gray-200 px-4.5 py-[0.625rem] text-black;
+        }
+
+        .code-box {
+            @apply rounded-b-lg px-4.5 py-3 text-gray-700 overflow-x-auto;
+        }
+    }
+
+    /* inline code */
+
+    p > code,
+    li > code {
+        @apply text-xs text-black py-0.5 px-1 mx-0.5 rounded-[0.2rem] bg-gray-100 border;
+    }
+
+    /* table */
+
+    table {
+        @apply table-auto;
+
+        th, td {
+            @apply border border-gray-300 px-2 py-1;
+        }
+
+        thead {
+            @apply bg-[#f1f2f3];
+        }
+    }
+
+    /* title */
+
+    h2 {
+        @apply text-2xl my-[0.5rem];
+    }
+
+    h3 {
+        @apply text-xl my-[0.4rem];
+    }
+
+    h4 {
+        @apply text-lg my-[0.3rem];
+    }
+
+    h5 {
+        @apply text-lg text-[16px] my-[0.2rem];
+    }
+
+    h6 {
+        @apply text-sm my-[0.1rem];
+    }
+}
