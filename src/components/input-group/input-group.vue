@@ -56,7 +56,7 @@ const valid = computed((): boolean => {
         ref="input"
         v-bind="Object({ ...props, ...$attrs })"
         :modelValue="modelValue"
-        @input="v => {
+        @input="(v: any) => {
           updated=true;
           updateModelValue(emits, v)
         }"
@@ -67,7 +67,7 @@ const valid = computed((): boolean => {
         ref="input"
         v-bind="Object({ ...props, ...$attrs })"
         :modelValue="modelValue"
-        @input="v => {
+        @input="(v: any) => {
           updated=true;
           updateModelValue(emits, v)
         }"

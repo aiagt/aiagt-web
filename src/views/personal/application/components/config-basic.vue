@@ -36,7 +36,7 @@ watch(appStore.inputAppInfo, () => {
         multiple
         :max-tag-count="8"
         v-model="labelValues"
-        @change="value => {
+        @change="(value: Event) => {
           const r = parseLabels(value)
           appStore.inputAppInfo.label_ids = r.label_ids
           appStore.inputAppInfo.label_texts = r.label_texts

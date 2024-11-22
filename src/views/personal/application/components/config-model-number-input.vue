@@ -56,7 +56,7 @@ const tipsLines = computed(() => {
         :min="min"
         :max="max"
         :step="step"
-        @update:model-value="v => emits('update:modelValue', v)"
+        @update:model-value="(v: any) => emits('update:modelValue', v)"
         style="flex-grow: 1"
       />
       <a-input-number
@@ -66,7 +66,7 @@ const tipsLines = computed(() => {
         :max="max"
         :step="step"
         class="max-w-40"
-        @update:model-value="v => emits('update:modelValue', v)"
+        @update:model-value="(v: any) => emits('update:modelValue', v)"
       />
     </div>
   </div>

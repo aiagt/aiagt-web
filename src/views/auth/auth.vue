@@ -6,7 +6,7 @@ import { useRouter } from 'vue-router'
 import { IconLoading } from '@arco-design/web-vue/es/icon'
 import { ref } from 'vue'
 import { Message } from '@arco-design/web-vue'
-import { isEnterEvent, onEnter } from '@/utils/event.ts'
+import { onEnter } from '@/utils/event.ts'
 
 const authStore = useAuthStore()
 const router = useRouter()

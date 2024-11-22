@@ -62,7 +62,7 @@ function back() {
       The verification code has been sent to your email, please enter the six-digit verification code in your email
     </div>
 
-    <verification-code v-model="captcha" @complete="next" @keydown.enter="e => onEnter(e, next)" />
+    <verification-code v-model="captcha" @complete="next" @keydown.enter="(e: Event) => onEnter(e, next)" />
 
     <div class="w-full flex flex-col gap-4">
       <button

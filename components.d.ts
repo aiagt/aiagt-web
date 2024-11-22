@@ -14,11 +14,9 @@ declare module 'vue' {
     AiList: typeof import('./src/components/ai-list/ai-list.vue')['default']
     AiListItem: typeof import('./src/components/ai-list/ai-list-item/ai-list-item.vue')['default']
     Editor: typeof import('./src/components/editor/editor.vue')['default']
-    Input: typeof import('./src/components/input/input.vue')['default']
     InputGroup: typeof import('./src/components/input-group/input-group.vue')['default']
     Modal: typeof import('./src/components/modal/modal.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    Search: typeof import('./src/layout/home/components/search.vue')['default']
   }
 }
