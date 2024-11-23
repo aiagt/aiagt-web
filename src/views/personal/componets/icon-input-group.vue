@@ -43,7 +43,7 @@ async function upload(_: any, fileItem: FileItem) {
   if (!fileItem || !fileItem.file) return
   const resp = await uploadAssetsAPI(fileItem.file)
 
-  fileURL.value = `/api/assets/${resp.filename}`
+  fileURL.value = `${import.meta.env.VITE_API_BASE_URL}/assets/${resp.filename}`
   fileLocalURL.value = fileItem.url
 }
 </script>
@@ -59,6 +59,8 @@ async function upload(_: any, fileItem: FileItem) {
         @change="upload"
         :show-file-list="false"
         :auto-upload="false"
+        :limit="1"
+        accept="image/png, image/jpeg, image/jpg, image/gif, image/webp, image/bmp, image/tiff, image/svg+xml, image/x-icon"
       >
         <template #upload-button>
           <div
