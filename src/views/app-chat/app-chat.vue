@@ -14,6 +14,7 @@ import AiagtText from '@c/aiagt/aiagt-text.vue'
 import AiagtLong from '@c/aiagt/aiagt-long.vue'
 import { useModelStore } from '@/store/model.ts'
 import { Message } from '@arco-design/web-vue'
+import { asset } from '@/models/assets'
 
 const router = useRouter()
 const route = useRoute()
@@ -155,7 +156,7 @@ function deleteConversation(id: number, idx: number) {
             <div
               class="flex justify-between items-center gap-2 py-2 px-3 text-xs !text-[11px] text-gray-700 border-[0.5px] rounded-lg">
               <div class="flex items-center gap-2">
-                <img :src="model.logo" :alt="model.name" class="w-4 h-4" />
+                <img :src="asset(model.logo)" :alt="model.name" class="w-4 h-4" />
                 {{ model.name }}
               </div>
               <div class="px-1 bg-gray-100 rounded-sm text-[8px]">{{ model.source }}</div>
@@ -170,7 +171,7 @@ function deleteConversation(id: number, idx: number) {
                 v-for="tool of app.tools.slice(0, 3)"
                 class="flex items-center gap-1 py-1.5 px-2 text-xs !text-[11px] text-gray-700 rounded-md bg-gray-100 app-tools-item transition"
               >
-                <img v-if="tool.plugin" :src="tool.plugin?.logo" :alt="tool.name" class="w-4 h-4" />
+                <img v-if="tool.plugin" :src="asset(tool.plugin?.logo)" :alt="tool.name" class="w-4 h-4" />
                 <div class="app-tools-item-name">{{ tool.name }}</div>
               </div>
               <div
@@ -183,7 +184,7 @@ function deleteConversation(id: number, idx: number) {
 
             <div class="text-xs truncate flex gap-1.5 pt-2 pl-0.5 items-center justify-between">
               <div class="flex gap-1.5 items-center truncate">
-                <img :src="app.author?.avatar" :alt="app.author?.username" class="w-4 h-4 rounded-full">
+                <img :src="asset(app.author?.avatar)" :alt="app.author?.username" class="w-4 h-4 rounded-full">
                 <div class="font-medium">{{ app.author?.username }}</div>
               </div>
               <aiagt-text style="height: 14px; width: 47px" />
