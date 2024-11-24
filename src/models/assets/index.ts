@@ -4,8 +4,8 @@ export interface UploadAssetResp {
 }
 
 export function asset(src?: string): string | undefined {
-  if (!src) {
-    return undefined
+  if (!src?.length) {
+    return src
   }
 
   if (src.startsWith('http')) {

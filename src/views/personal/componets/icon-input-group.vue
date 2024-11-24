@@ -4,6 +4,7 @@ import { FileItem } from '@arco-design/web-vue'
 import { uploadAssetsAPI } from '@/api/assets'
 import { modelValueEmits, modelValueProps } from '@/utils/model_value.ts'
 import { computed, ref, watch } from 'vue'
+import { asset } from '@/models/assets'
 
 const props = defineProps({
   type: {
@@ -35,7 +36,7 @@ watch(modelValue, (newVal, oldVal) => {
   if (newVal === oldVal) return
 
   fileURL.value = modelValue.value
-  fileLocalURL.value = modelValue.value
+  fileLocalURL.value = asset(modelValue.value)
 }, { immediate: true })
 
 watch(fileURL, () => {
@@ -63,7 +64,6 @@ async function upload(_: any, fileItem: FileItem) {
         @change="upload"
         :show-file-list="false"
         :auto-upload="false"
-        :limit="1"
         accept="image/png, image/jpeg, image/jpg, image/gif, image/webp, image/bmp, image/tiff, image/svg+xml, image/x-icon"
       >
         <template #upload-button>
