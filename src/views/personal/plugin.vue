@@ -7,7 +7,6 @@ import { createPluginAPI, listPluginAPI, listPluginLabelAPI } from '@/api/plugin
 import Modal from '@c/modal/modal.vue'
 import InputGroup from '@c/input-group/input-group.vue'
 import IconInputGroup from '@v/personal/componets/icon-input-group.vue'
-import { useRouter } from 'vue-router'
 import { usePersonalStore } from '@/store/personal.ts'
 import { useAuthStore } from '@/store/auth.ts'
 import AiSpin from '@c/ai-spin/ai-spin.vue'
