@@ -7,6 +7,7 @@ import AiList from '@c/ai-list/ai-list.vue'
 import AiListItem from '@c/ai-list/ai-list-item/ai-list-item.vue'
 import { isEnterEvent } from '@/utils/event.ts'
 import { useAuthStore } from '@/store/auth.ts'
+import { asset } from '@/models/assets'
 
 const authStore = useAuthStore()
 
@@ -60,7 +61,7 @@ const focusedPluginID = ref<number>()
         >
           <div class="flex flex-col gap-2">
             <div class="flex gap-2 items-center">
-              <img :src="plugin.logo" :alt="plugin.name" class="w-7 h-7 bg-white rounded-md border">
+              <img :src="asset(plugin.logo)" :alt="plugin.name" class="w-7 h-7 bg-white rounded-md border">
               <div class="font-medium truncate">{{ plugin.name }}</div>
             </div>
             <div class="text-[10px] text-wrap">{{ plugin.description }}</div>

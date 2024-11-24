@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useModelStore } from '@/store/model.ts'
+import { asset } from '@/models/assets'
 
 const modelStore = useModelStore()
 const modelOptions = modelStore.modelOptions
@@ -30,7 +31,7 @@ const selectedOption = computed(() => {
       class="flex gap-2 items-center bg-[#f9f9f9] py-2 px-3 rounded-xl text-xs cursor-pointer active:bg-[#eeeeee] transition"
     >
       <div class="flex-1 flex gap-4 p-3 min-w-96">
-        <img :src="selectedOption.logo" :alt="selectedOption.name" class="w-20 h-20">
+        <img :src="asset(selectedOption.logo)" :alt="selectedOption.name" class="w-20 h-20">
         <div class="flex flex-col gap-2 truncate">
           <div class="text-lg font-medium text-gray-700">{{ selectedOption.name }}</div>
           <div class="flex gap-1">
@@ -59,7 +60,7 @@ const selectedOption = computed(() => {
           :class="{'!bg-gray-100': selectedId === option.id}"
           @click="selectedId = option.id; emits('update:modelValue', option.id); popupVisible=false"
         >
-          <img :src="option.logo" :alt="option.name" class="w-4 h-4">
+          <img :src="asset(option.logo)" :alt="option.name" class="w-4 h-4">
           <div class="flex-1">{{ option.name }}</div>
           <div class="inline-flex gap-1 justify-start w-40">
             <div class="py-0.5 px-1.5 rounded-[0.25rem] bg-blue-50 text-blue-700 text-[9px] whitespace-nowrap">

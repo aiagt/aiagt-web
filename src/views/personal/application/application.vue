@@ -17,6 +17,7 @@ import { useModelStore } from '@/store/model.ts'
 import ConfigModel from '@v/personal/application/components/config-model.vue'
 import PluginsInner from '@v/personal/application/components/plugins-inner.vue'
 import ConfigBasic from '@v/personal/application/components/config-basic.vue'
+import { asset } from '@/models/assets'
 
 const route = useRoute()
 const router = useRouter()
@@ -123,7 +124,7 @@ function updatePreviewScroll() {
           <a-trigger position="rt" trigger="click" :unmount-on-close="false" :popup-translate="[15, 0]">
             <div class="flex flex-col gap-2 flex-1 rounded-xl px-3 py-2 hover:bg-[#eeeeee] cursor-pointer">
               <div class="flex gap-2 items-center">
-                <img :src="app.logo" :alt="app.name" class="w-12 rounded-lg bg-white">
+                <img :src="asset(app.logo)" :alt="app.name" class="w-12 rounded-lg bg-white">
                 <div class="flex flex-col gap-1">
                   <div class="font-medium text-lg !text-[16px] text-black flex items-center">
                     {{ app.name }}
@@ -166,7 +167,7 @@ function updatePreviewScroll() {
             @click="focusedTab='model'"
           >
             <div class="flex gap-2">
-              <img :src="model.logo" :alt="model.name" class="w-4 fill-blue-500">
+              <img :src="asset(model.logo)" :alt="model.name" class="w-4 fill-blue-500">
               {{ model.name }}
             </div>
             <div class="py-0.5 px-1.5 rounded-[0.25rem] bg-white text-[9px] whitespace-nowrap text-gray-600">

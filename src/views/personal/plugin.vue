@@ -113,6 +113,7 @@ init()
   >
     <div class="py-3 flex flex-col gap-8">
       <icon-input-group
+        type="plugin_logo"
         v-model="modalConfig.createPluginReq.logo"
       />
       <input-group

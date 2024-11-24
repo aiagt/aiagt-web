@@ -6,6 +6,7 @@ import AiButton from '@c/ai-button/ai-button.vue'
 import { useApplicationStore } from '@/store/application.ts'
 import AiList from '@c/ai-list/ai-list.vue'
 import AiListItem from '@c/ai-list/ai-list-item/ai-list-item.vue'
+import { asset } from '@/models/assets'
 
 const props = defineProps<{
   pluginId?: number
@@ -50,13 +51,13 @@ function hasPluginTool(toolID: number) {
     <div class="flex flex-col gap-6 px-4">
       <div class="flex gap-3 items-center">
         <div class="w-14 h-14 border rounded-xl">
-          <img :src="plugin.logo" :alt="plugin.name">
+          <img :src="asset(plugin.logo)" :alt="plugin.name">
         </div>
         <div class="flex flex-col gap-1">
           <div class="text-lg font-medium text-black">{{ plugin.name }}</div>
           <div class="flex gap-1">
             <div class="flex gap-1 items-center">
-              <img :src="plugin.author?.avatar" :alt="plugin.author?.username" class="w-3 h-3 rounded-full">
+              <img :src="asset(plugin.author?.avatar)" :alt="plugin.author?.username" class="w-3 h-3 rounded-full">
               <div class="text-xs text-gray-500">{{ plugin.author?.username }}</div>
             </div>
           </div>

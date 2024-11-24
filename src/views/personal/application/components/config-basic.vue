@@ -21,6 +21,7 @@ watch(appStore.inputAppInfo, () => {
        id="config-basic">
     <icon-input-group
       title-class="text-xs text-gray-500"
+      type="app_logo"
       required
       name="App icon"
       v-model="appStore.inputAppInfo.logo"

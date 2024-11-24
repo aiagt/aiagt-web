@@ -21,6 +21,7 @@ import Modal from '@c/modal/modal.vue'
 import IconInputGroup from '@v/personal/componets/icon-input-group.vue'
 import { generateSchemaFromRaw, JSONSchema } from '@/utils/json_schema.ts'
 import Editor from '@c/editor/editor.vue'
+import { asset } from '@/models/assets'
 
 const route = useRoute()
 const router = useRouter()
@@ -338,7 +339,7 @@ init()
           class="inline-flex gap-2 items-center">
           <img
             class="w-9 h-9 rounded-lg"
-            :src="plugin.logo"
+            :src="asset(plugin.logo)"
             :alt="plugin.name"
           >
           <div class="flex flex-col gap-1 pr-1">
@@ -363,6 +364,7 @@ init()
           <div class="flex flex-col gap-4" :class="{'editable': pluginConfig.allowEditPluginInfo}">
             <icon-input-group
               v-if="pluginConfig.allowEditPluginInfo"
+              type="plugin_logo"
               image-size="3.75rem"
               v-model="pluginConfig.info.logo"
               title-class="text-xs"
