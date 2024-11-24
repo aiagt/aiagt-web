@@ -9,6 +9,8 @@ import { mark } from '@/assets/marked'
 import { IconPlugin } from '@arco-iconbox/vue-aiagt'
 import { clipboardCopy } from '@/utils/copy.ts'
 import { debounce } from '@arco-design/web-vue/es/_utils/debounce'
+import AiSpin from '@c/ai-spin/ai-spin.vue'
+import AiImage from '@c/ai-image/ai-image.vue'
 
 const props = defineProps<{
   app: App;
@@ -29,11 +31,15 @@ const conversation = reactive({
   inputMessage: string;
 })
 
+const loadingMessage = ref(false)
+
 watch(props.app, async () => {
   Object.assign(appInfo, props.app)
 
   if (props.dev) {
+    loadingMessage.value = true
     const resp = await initDevelopAPI({ app_id: props.app.id })
+    loadingMessage.value = false
 
     conversation.id = resp.conversation.id
     conversation.messages.splice(0, conversation.messages.length)
@@ -82,9 +88,15 @@ watch(computed(() => props.conversation_id), async () => {
   conversation.id = props.conversation_id
 
   if (props.conversation_id) {
-    const resp = await listMessageAPI({ conversation_id: props.conversation_id } as ListMessageReq)
-    conversation.messages.splice(0, conversation.messages.length)
-    conversation.messages.push(...resp.messages)
+    loadingMessage.value = true
+
+    try {
+      const resp = await listMessageAPI({ conversation_id: props.conversation_id } as ListMessageReq)
+      conversation.messages.splice(0, conversation.messages.length)
+      conversation.messages.push(...resp.messages)
+    } finally {
+      loadingMessage.value = false
+    }
   } else {
     conversation.messages.splice(0, conversation.messages.length)
   }
@@ -348,99 +360,107 @@ function regenerate(idx: number) {
 
 <template>
   <div class="h-screen w-full flex flex-col items-center overflow-y-auto p-10" ref="chatRef">
-    <div class="flex flex-col gap-4 mb-10 flex-1 inner-container">
-      <div
-        v-for="(message, idx) of conversation.messages"
-        class="flex flex-col w-full"
-        :class="message.role === MessageRole.USER ? 'items-end' : 'items-start'"
-      >
+    <ai-spin :loading="loadingMessage" hide-icon>
+      <div class="flex flex-col gap-4 mb-10 flex-1 inner-container" v-if="conversation.messages?.length">
         <div
-          v-if="message.role === MessageRole.ASSISTANT && message.content.type === MessageType.TEXT"
-          class="pt-2 pb-0 rounded-xl marked"
-          v-html="mark(message.content.content.text?.text || '')"
-        />
-        <div
-          v-else-if="message.role === MessageRole.USER && message.content.type === MessageType.TEXT"
-          class="px-3 py-2 rounded-xl bg-[#ebeced] marked"
-          v-text="message.content.content.text?.text"
-        />
-        <div
-          v-else-if="((message.role === MessageRole.ASSISTANT && message.content.type === MessageType.FUNCTION_CALL) ||
-              (message.role === MessageRole.FUNCTION && message.content.type === MessageType.FUNCTION))"
-          class="bg-[#fafafa] border-[#ccc] border-[0.5px] px-4 py-2 rounded-xl flex flex-col gap-1 text-xs max-w-96 cursor-pointer hover:bg-[#f3f3f3]"
-          :class="{'!max-w-full': smallWindow}"
+          v-for="(message, idx) of conversation.messages"
+          class="flex flex-col w-full"
+          :class="message.role === MessageRole.USER ? 'items-end' : 'items-start'"
         >
-          <div class="truncate flex items-center gap-2 text-gray-700">
-            <div class="text-[15px]">
-              <icon-plugin class="stroke-[100]" />
-            </div>
-            {{
-              message.content.type === MessageType.FUNCTION_CALL
-                ? message.content.content.func_call?.name
-                : message.content.content.func?.name
-            }}
-            <div
-              class="bg-white px-1 rounded-sm text-xs !text-[10px]"
-              :class="message.content.type === MessageType.FUNCTION_CALL ? 'text-purple-500' : 'text-blue-500'"
-            >
+          <div
+            v-if="message.role === MessageRole.ASSISTANT && message.content.type === MessageType.TEXT"
+            class="pt-2 pb-0 rounded-xl marked"
+            v-html="mark(message.content.content.text?.text || '')"
+          />
+          <div
+            v-else-if="message.role === MessageRole.USER && message.content.type === MessageType.TEXT"
+            class="px-3 py-2 rounded-xl bg-[#ebeced] marked"
+            v-text="message.content.content.text?.text"
+          />
+          <div
+            v-else-if="((message.role === MessageRole.ASSISTANT && message.content.type === MessageType.FUNCTION_CALL) ||
+              (message.role === MessageRole.FUNCTION && message.content.type === MessageType.FUNCTION))"
+            class="bg-[#fafafa] border-[#ccc] border-[0.5px] px-4 py-2 rounded-xl flex flex-col gap-1 text-xs max-w-96 cursor-pointer hover:bg-[#f3f3f3]"
+            :class="{'!max-w-full': smallWindow}"
+          >
+            <div class="truncate flex items-center gap-2 text-gray-700">
+              <div class="text-[15px]">
+                <icon-plugin class="stroke-[100]" />
+              </div>
               {{
-                message.content.type === MessageType.FUNCTION_CALL ? 'call' : 'result'
+                message.content.type === MessageType.FUNCTION_CALL
+                  ? message.content.content.func_call?.name
+                  : message.content.content.func?.name
+              }}
+              <div
+                class="bg-white px-1 rounded-sm text-xs !text-[10px]"
+                :class="message.content.type === MessageType.FUNCTION_CALL ? 'text-purple-500' : 'text-blue-500'"
+              >
+                {{
+                  message.content.type === MessageType.FUNCTION_CALL ? 'call' : 'result'
+                }}
+              </div>
+            </div>
+            <div class="truncate text-[10px] text-gray-400">
+              {{
+                message.content.type === MessageType.FUNCTION_CALL
+                  ? message.content.content.func_call?.arguments
+                  : message.content.content.func?.content
               }}
             </div>
           </div>
-          <div class="truncate text-[10px] text-gray-400">
-            {{
-              message.content.type === MessageType.FUNCTION_CALL
-                ? message.content.content.func_call?.arguments
-                : message.content.content.func?.content
-            }}
-          </div>
-        </div>
-        <div v-else class="bg-black py-2">{{ message }}</div>
-        <div
-          class="py-2 px-1 text-gray-400 flex gap-2 text-xs !text-[11px] items-center"
-          v-if="message.content.type === MessageType.TEXT"
-        >
-          <div>{{ new Time(message.updated_at).string() }}</div>
-          <a-popconfirm
-            content="Are you sure you want to delete?"
-            @ok="deleteMessage(message.id, idx)"
+          <div v-else class="bg-black py-2">{{ message }}</div>
+          <div
+            class="py-2 px-1 text-gray-400 flex gap-2 text-xs !text-[11px] items-center"
+            v-if="message.content.type === MessageType.TEXT"
           >
-            <icon-delete
+            <div>{{ new Time(message.updated_at).string() }}</div>
+            <a-popconfirm
+              content="Are you sure you want to delete?"
+              @ok="deleteMessage(message.id, idx)"
+            >
+              <icon-delete
+                class="cursor-pointer"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </a-popconfirm>
+            <icon-copy
               class="cursor-pointer"
               stroke-linecap="round"
               stroke-linejoin="round"
-            />
-          </a-popconfirm>
-          <icon-copy
-            class="cursor-pointer"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            @click="() => {
+              @click="() => {
               const text = message.content.content.text?.text;
               if (text) {
                 clipboardCopy(text)
                 ArcoMessage.info('Copied to clipboard')
               }
             }"
-          />
-          <icon-edit
-            class="cursor-pointer"
-            v-show="message.role === MessageRole.USER"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            @click="updateMsgStatus.id = message.id; updateMsgStatus.text = message.content.content.text?.text; focusUpdateMsgInput()"
-          />
-          <icon-refresh
-            class="cursor-pointer"
-            v-show="message.role === MessageRole.ASSISTANT"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            @click="regenerate(idx)"
-          />
+            />
+            <icon-edit
+              class="cursor-pointer"
+              v-show="message.role === MessageRole.USER"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              @click="updateMsgStatus.id = message.id; updateMsgStatus.text = message.content.content.text?.text; focusUpdateMsgInput()"
+            />
+            <icon-refresh
+              class="cursor-pointer"
+              v-show="message.role === MessageRole.ASSISTANT"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              @click="regenerate(idx)"
+            />
+          </div>
         </div>
       </div>
-    </div>
+      <div class="flex flex-col justify-center items-center gap-6 flex-1 inner-container" v-else>
+        <ai-image :src="app.logo" :alt="app.name" class="w-12 h-12 rounded-xl" />
+        <div class="text-black text-xl">
+          {{ app.name }}
+        </div>
+      </div>
+    </ai-spin>
     <div class="inner-container sticky bottom-0">
       <div class="px-2 flex justify-between">
         <div
