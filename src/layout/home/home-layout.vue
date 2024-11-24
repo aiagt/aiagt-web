@@ -105,7 +105,7 @@ const router = useRouter()
                 class="hover:!bg-gray-100 !rounded-md !px-1"
                 inner-class="!pl-2 !pr-3 !justify-start !py-2 !gap-3"
               >
-                <img :src="authStore.userinfo.avatar" :alt="authStore.userinfo.username" class="w-8 h-8 rounded-full bg-white">
+                <img :src="asset(authStore.userinfo.avatar)" :alt="authStore.userinfo.username" class="w-8 h-8 rounded-full bg-white">
                 <div
                   class="flex flex-col gap-2"
                 >
