@@ -135,7 +135,7 @@ function deleteConversation(id: number, idx: number) {
           <div class="flex flex-col gap-3 p-4 bg-white rounded-2xl">
 
             <div class="flex items-center gap-2">
-              <img :src="app.logo" :alt="app.name" class="w-12 h-12 rounded-xl">
+              <img :src="asset(app.logo)" :alt="app.name" class="w-12 h-12 rounded-xl">
               <div class="truncate flex flex-col gap-1">
                 <div class="truncate text-lg !text-[16px] text-black font-medium">{{ app.name }}</div>
                 <div class="flex gap-1 flex-wrap">
