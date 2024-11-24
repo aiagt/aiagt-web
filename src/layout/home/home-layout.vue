@@ -12,6 +12,7 @@ import AiList from '@c/ai-list/ai-list.vue'
 import AiListItem from '@c/ai-list/ai-list-item/ai-list-item.vue'
 import { useRouter } from 'vue-router'
 import AiagtText from '@c/aiagt/aiagt-text.vue'
+import { asset } from '@/models/assets'
 
 const homeStore = useHomeStore()
 const authStore = useAuthStore()
@@ -83,7 +84,7 @@ const router = useRouter()
           <div
             class="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-white active:scale-[.98] cursor-pointer transition"
           >
-            <img :src="authStore.userinfo.avatar" :alt="authStore.userinfo.username" class="w-6 h-6 rounded-full bg-white">
+            <img :src="asset(authStore.userinfo.avatar)" :alt="authStore.userinfo.username" class="w-6 h-6 rounded-full bg-white">
             <div
               class="flex flex-col gap-1"
             >

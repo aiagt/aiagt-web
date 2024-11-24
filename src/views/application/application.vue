@@ -6,6 +6,7 @@ import AiList from '@c/ai-list/ai-list.vue'
 import AiListItem from '@c/ai-list/ai-list-item/ai-list-item.vue'
 import { listAppAPI } from '@/api/app'
 import { useRouter } from 'vue-router'
+import { asset } from '@/models/assets'
 
 const router = useRouter()
 
@@ -31,7 +32,7 @@ listAppAPI({}).then(resp => {
       class="hover:!bg-gray-100"
     >
       <div class="flex items-center gap-2 !py-2" @click="router.push(`/app/${app.id}`)">
-        <img :src="app.logo" :alt="app.name" class="w-12 h-12 rounded-xl bg-white">
+        <img :src="asset(app.logo)" :alt="app.name" class="w-12 h-12 rounded-xl bg-white">
         <div class="flex flex-col gap-1">
           <div>
             {{ app.name }}

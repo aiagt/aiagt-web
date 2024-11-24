@@ -12,6 +12,7 @@ import IconInputGroup from '@v/personal/componets/icon-input-group.vue'
 import { usePersonalStore } from '@/store/personal.ts'
 import { useApplicationStore } from '@/store/application.ts'
 import { useAuthStore } from '@/store/auth.ts'
+import { asset } from '@/models/assets'
 
 const router = useRouter()
 
@@ -99,7 +100,7 @@ init()
       <card v-for="app of listCfg.apps"
             :id="app.id"
             :name="app.name"
-            :logo="app.logo"
+            :logo="asset(app.logo)"
             :time="new Time(app.updated_at)"
             :description="app.description"
             :labels="app.labels"
@@ -118,6 +119,7 @@ init()
   >
     <div class="py-3 flex flex-col gap-8">
       <icon-input-group
+        type="app_logo"
         v-model="modalConfig.createAppReq.logo"
       />
       <input-group

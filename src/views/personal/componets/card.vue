@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Time } from '@/models/base'
 import { useRouter } from 'vue-router'
+import { asset } from '@/models/assets'
 
 defineProps<{
   id?: number
@@ -27,7 +28,7 @@ const router = useRouter()
     <slot>
       <div class="flex flex-col gap-2.5">
         <div class="flex gap-2.5 items-center">
-          <img :src="logo" :alt="name" class="w-11 h-11 bg-white rounded-lg">
+          <img :src="asset(logo)" :alt="name" class="w-11 h-11 bg-white rounded-lg">
           <div class="flex flex-col">
             <div class="text-lg font-medium">{{ name }}</div>
             <div class="text-gray-400 text-xs scale-90 origin-bottom-left">{{ time?.string() }}</div>

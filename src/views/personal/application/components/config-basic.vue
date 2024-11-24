@@ -21,6 +21,7 @@ watch(appStore.inputAppInfo, () => {
        id="config-basic">
     <icon-input-group
       title-class="text-xs text-gray-500"
+      type="app_logo"
       required
       name="App icon"
       v-model="appStore.inputAppInfo.logo"
@@ -36,7 +37,7 @@ watch(appStore.inputAppInfo, () => {
         multiple
         :max-tag-count="8"
         v-model="labelValues"
-        @change="value => {
+        @change="(value: Event) => {
           const r = parseLabels(value)
           appStore.inputAppInfo.label_ids = r.label_ids
           appStore.inputAppInfo.label_texts = r.label_texts

@@ -6,6 +6,10 @@ import { modelValueEmits, modelValueProps } from '@/utils/model_value.ts'
 import { computed, ref, watch } from 'vue'
 
 const props = defineProps({
+  type: {
+    type: String,
+    required: true
+  },
   imageSize: {
     type: String,
     default: '5rem'
@@ -41,9 +45,9 @@ watch(fileURL, () => {
 
 async function upload(_: any, fileItem: FileItem) {
   if (!fileItem || !fileItem.file) return
-  const resp = await uploadAssetsAPI(fileItem.file)
+  const resp = await uploadAssetsAPI(props.type, fileItem.file)
 
-  fileURL.value = `/api/assets/${resp.filename}`
+  fileURL.value = `${resp.file_path}`
   fileLocalURL.value = fileItem.url
 }
 </script>
@@ -59,6 +63,8 @@ async function upload(_: any, fileItem: FileItem) {
         @change="upload"
         :show-file-list="false"
         :auto-upload="false"
+        :limit="1"
+        accept="image/png, image/jpeg, image/jpg, image/gif, image/webp, image/bmp, image/tiff, image/svg+xml, image/x-icon"
       >
         <template #upload-button>
           <div
