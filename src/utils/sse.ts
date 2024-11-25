@@ -86,7 +86,7 @@ export function sse(
           }
 
           readStream()
-        })
+        }).catch(onError)
       }
 
       readStream()

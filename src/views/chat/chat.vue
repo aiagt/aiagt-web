@@ -45,7 +45,7 @@ watch(props.app, async () => {
     conversation.messages.splice(0, conversation.messages.length)
     conversation.messages.push(...resp.messages)
   }
-})
+}, { immediate: true })
 
 const chatRef = ref<HTMLElement | undefined>()
 
@@ -148,8 +148,11 @@ interface ChatStatus {
   isNewMessage: boolean;
 }
 
+const chatting = ref(false)
+
 function chat(messages?: MessageContent[]) {
   const status: ChatStatus = { isNewMessage: true }
+  chatting.value = true
 
   chatAPI(
     {
@@ -167,11 +170,13 @@ function chat(messages?: MessageContent[]) {
           break
         case 'done':
           console.log(conversation.messages)
+          chatting.value = false
           break
       }
     },
     error => {
       ArcoMessage.error(error)
+      chatting.value = false
     }
   )
 
@@ -361,7 +366,7 @@ function regenerate(idx: number) {
 <template>
   <div class="h-screen w-full flex flex-col items-center overflow-y-auto p-10" ref="chatRef">
     <ai-spin :loading="loadingMessage" hide-icon>
-      <div class="flex flex-col gap-4 mb-10 flex-1 inner-container" v-if="conversation.messages?.length">
+      <div class="flex flex-col gap-4 mb-10 flex-1 inner-container" v-if="conversation.messages?.length || chatting">
         <div
           v-for="(message, idx) of conversation.messages"
           class="flex flex-col w-full"
@@ -453,10 +458,11 @@ function regenerate(idx: number) {
             />
           </div>
         </div>
+        <div v-show="chatting" class="bg-black w-3 h-3 rounded-full scale-animation" />
       </div>
       <div class="flex flex-col justify-center items-center gap-6 flex-1 inner-container" v-else>
-        <ai-image :src="app.logo" :alt="app.name" class="w-12 h-12 rounded-xl" />
-        <div class="text-black text-xl">
+        <ai-image :src="app.logo" :alt="app.name" class="w-14 h-14 rounded-xl" />
+        <div class="text-gray-700 text-lg">
           {{ app.name }}
         </div>
       </div>
@@ -528,5 +534,18 @@ function regenerate(idx: number) {
   .arco-textarea-focus {
     @apply !shadow-transparent;
   }
+}
+
+@keyframes scale {
+  0%, 100% {
+    transform: scale(1.2);
+  }
+  50% {
+    transform: scale(0.8);
+  }
+}
+
+.scale-animation {
+  animation: scale 1s infinite;
 }
 </style>

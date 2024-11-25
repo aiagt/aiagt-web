@@ -38,15 +38,11 @@ getAppAPI(appID, _ => {
 
 const loadingConversation = ref(true)
 
-async function loadConversations(focusFirst?: boolean) {
+async function loadConversations() {
   const resp = await listConversationAPI({ app_id: appID })
 
   conversations.splice(0, conversations.length)
   conversations.push(...resp.conversations)
-
-  if (focusFirst && conversations?.length) {
-    focusedConversationID.value = conversations[0].id
-  }
 }
 
 loadConversations().then(() => {
@@ -106,7 +102,7 @@ function deleteConversation(id: number, idx: number) {
 </script>
 
 <template>
-  <ai-spin :loading class="h-screen" dot>
+  <ai-spin :loading="loading" class="h-screen" dot>
     <div class="flex bg-[#fcfcfc] max-w-full">
 
       <div
@@ -263,7 +259,7 @@ function deleteConversation(id: number, idx: number) {
 
             <div
               class="flex justify-center items-center gap-2 py-2.5 rounded-lg bg-[#e7ebf6] border-[#cad6f6] border-[0.5px] text-[12px] font-medium text-[#4b6ce9] cursor-pointer"
-              @click="focusedConversationID = undefined"
+              @click="focusedConversationID = focusedConversationID === undefined ? 0 : undefined"
             >
               <icon-plus :stroke-width="6" stroke-linejoin="round" stroke-linecap="round" />
               New Conversation
@@ -274,11 +270,10 @@ function deleteConversation(id: number, idx: number) {
 
       <div class="flex-1 flex justify-center max-w-full">
         <div class="w-full">
-          <app-view :app="app" :conversation_id="focusedConversationID" @new-conversation="loadConversations(true)" />
+          <app-view :app="app" :conversation_id="focusedConversationID" @new-conversation="loadConversations()" />
         </div>
       </div>
 
     </div>
-
   </ai-spin>
 </template>
