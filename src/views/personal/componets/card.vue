@@ -66,15 +66,6 @@ const router = useRouter()
 </template>
 
 <style scoped>
-.line-2 {
-  display: -webkit-box;
-  line-clamp: 2;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .personal-card:hover {
   .personal-card-chat {
     display: flex;

@@ -64,7 +64,7 @@ const focusedPluginID = ref<number>()
             class="!px-2"
             :class="focusedPluginID !== plugin.id ? 'hover:!bg-gray-50' : ''"
             focus-class="!bg-gray-100"
-            inner-class="!justify-start !py-2"
+            inner-class="!justify-start !py-2 text-gray-800"
             :focused="focusedPluginID === plugin.id"
             @click="focusedPluginID = plugin.id"
           >

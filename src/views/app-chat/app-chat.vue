@@ -169,7 +169,7 @@ function deleteConversation(id: number, idx: number) {
                 <div class="px-1 bg-gray-100 rounded-sm text-[8px]">{{ model.source }}</div>
               </div>
 
-              <div class="text-xs font-medium">
+              <div v-if="app.tools?.length" class="text-xs font-medium">
                 Plugin tools
               </div>
 
@@ -210,7 +210,7 @@ function deleteConversation(id: number, idx: number) {
                     class="text-black rounded-xl !px-1.5"
                     :class="focusedConversationID === conversation.id ? '!bg-[#edeeef]' : 'hover:!bg-gray-100'"
                     :focused="focusedConversationID === conversation.id"
-                    inner-class="!py-2.5 !px-2 justify-between gap-4"
+                    inner-class="!py-2.5 !px-2 justify-between gap-4 text-gray-800"
                   >
                     <div
                       class="flex flex-col gap-1 text-gray-600 truncate"

@@ -87,7 +87,8 @@ export interface ListAppReq {
   author_id?: number;
   name?: string;
   description?: string;
-  labels?: string[];
+  label_ids?: number[];
+  with_author?: boolean;
 }
 
 export interface ListAppResp {
@@ -103,12 +104,13 @@ export interface PublishAppReq {
 export interface AppLabel {
   id: number;
   text: string;
+  pinned?: number;
   created_at: Time;
 }
 
-export interface ListAppLabelReq {
-  pagination?: PaginationReq;
+export interface ListAppLabelReq extends PaginationReq {
   text?: string;
+  pinned?: boolean;
 }
 
 export interface ListAppLabelResp {

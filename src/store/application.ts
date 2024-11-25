@@ -18,11 +18,11 @@ export const useApplicationStore = defineStore('application', () => {
   initInputAppInfo()
 
   const appLabels = reactive([] as AppLabel[])
-  const initAppLabels = () => {
-    listAppLabelAPI({ pagination: { page_size: 10000 } }).then(resp => {
-      appLabels.splice(0, appLabels.length)
-      appLabels.push(...resp.labels)
-    })
+  const initAppLabels = async () => {
+    const resp = await listAppLabelAPI({ page_size: 10000 })
+
+    appLabels.splice(0, appLabels.length)
+    appLabels.push(...resp.labels)
   }
 
   return { inputAppInfo, inputAppInfoInit, initInputAppInfo, appLabels, initAppLabels }

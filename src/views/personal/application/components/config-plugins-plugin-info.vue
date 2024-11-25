@@ -94,6 +94,7 @@ function hasPluginTool(toolID: number) {
         <ai-list-item
           v-for="tool of plugin.tools"
           class="!rounded-lg hover:!bg-gray-100 config-plugin-tool-item"
+          inner-class="text-gray-800"
         >
           <div class="flex flex-col items-start w-full gap-2">
             <div class="flex flex-col gap-2">

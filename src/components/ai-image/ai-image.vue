@@ -5,6 +5,9 @@ import { asset } from '@/models/assets'
 const props = withDefaults(defineProps<{
   src?: string;
   alt?: string;
+  round?: string;
+  borderSize?: string;
+  borderColor?: string;
 }>(), {})
 
 const src = computed(() => {
@@ -18,6 +21,7 @@ const src = computed(() => {
     :alt="alt"
     v-if="src?.length"
     v-bind="$attrs"
+    style="border-style: solid"
   />
   <div v-else v-bind="$attrs" />
 </template>
