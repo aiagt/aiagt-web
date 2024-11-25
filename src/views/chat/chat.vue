@@ -287,6 +287,8 @@ function isSendEvent(event?: KeyboardEvent) {
 }
 
 function sendMsg(e?: Event) {
+  if (chatting.value) return
+
   const event = e as KeyboardEvent | undefined
 
   if (isSendEvent(event) && conversation.inputMessage.trim().length) {
@@ -315,6 +317,8 @@ const updateMsgStatus = reactive({
 })
 
 async function updateMsg(e?: Event) {
+  if (chatting.value) return
+
   const event = e as KeyboardEvent | undefined
 
   const text = updateMsgStatus.text?.trim() || ''
@@ -507,8 +511,9 @@ function regenerate(idx: number) {
         />
         <button
           class="bg-black text-white text-lg rounded-full my-0.5 !w-8 !h-8 flex justify-center items-center"
+          :class="{'!bg-gray-500 !cursor-not-allowed': chatting}"
           @click="() => {
-            if (updateMsgStatus.id ) updateMsg()
+            if (updateMsgStatus.id) updateMsg()
             else sendMsg()
           } "
         >

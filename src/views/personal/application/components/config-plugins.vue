@@ -96,20 +96,20 @@ const focusedPluginID = ref<number>()
       </ai-spin>
     </div>
 
-    <div class="flex flex-col flex-1 h-screen min-w-[700px]">
+    <div class="flex flex-col flex-1 h-screen min-w-[720px]">
       <div class="flex justify-between items-center border-b px-4 py-3">
         <div class="text-black font-medium">Search Plugins</div>
         <div class="flex gap-2 items-center">
-          <div class="flex items-center bg-gray-100 gap-1 p-1 rounded-md">
+          <div class="flex items-center bg-gray-100 gap-1 p-[0.175rem] rounded-lg">
             <div
-              class="px-1.5 py-0.5 rounded-md text-xs cursor-pointer"
+              class="w-16 py-[0.165rem] rounded-md text-center text-xs cursor-pointer"
               :class="{'bg-white': !searchOptions.author_id}"
               @click="searchOptions.author_id = undefined; searchPlugin()"
             >
               All
             </div>
             <div
-              class="px-1.5 py-0.5 rounded-md text-xs cursor-pointer"
+              class="w-20 py-[0.165rem] rounded-md text-center text-xs cursor-pointer"
               :class="{'bg-white': searchOptions.author_id}"
               @click="searchOptions.author_id = authStore.userinfo.id; searchPlugin()"
             >
