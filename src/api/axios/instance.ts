@@ -7,16 +7,18 @@ const authStore = useAuthStore()
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
-  headers: { 'Content-Type': 'application/json' },
   timeout: 60000,
   transformResponse: (data: any) => {
     return JSONBigInt({ useNativeBigInt: true }).parse(data)
   },
   transformRequest: (data) => {
+    if (data instanceof FormData || data instanceof Blob || data instanceof ArrayBuffer) {
+      return data
+    }
     if (data) {
-      return JSON.stringify(data, (_, value) => {
-        return typeof value === 'bigint' ? value.toString() : value
-      })
+      return JSON.stringify(data, (_, value) =>
+        typeof value === 'bigint' ? value.toString() : value
+      )
     }
     return data
   }
@@ -24,6 +26,12 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
+    if (config.data instanceof FormData) {
+      delete config.headers['Content-Type']
+    } else {
+      config.headers['Content-Type'] = 'application/json'
+    }
+
     const token = authStore.getToken()
     if (token) {
       config.headers.set('Authorization', `Bearer ${token}`)
