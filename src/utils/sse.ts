@@ -17,7 +17,9 @@ export function sse(
       'Content-Type': 'application/json',
       ...headers
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data, (_, value) =>
+      typeof value === 'bigint' ? value.toString() : value
+    )
   })
     .then((response) => {
       if (!response.ok) {
