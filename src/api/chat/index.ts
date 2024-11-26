@@ -54,17 +54,17 @@ export async function listConversationAPI(req: ListConversationReq): Promise<Lis
   return Promise.resolve(resp.data)
 }
 
-export async function deleteConversationAPI(id: number): Promise<void> {
-  const resp = await del(`/chat/conversation/${id}`)
+export async function deleteConversationAPI(id: BigInt): Promise<void> {
+  const resp = await del(`/chat/conversation/${id.toString()}`)
   return Promise.resolve(resp.data)
 }
 
 export async function updateConversationAPI(req: UpdateConversationReq): Promise<void> {
-  const resp = await put(`/chat/conversation/${req.id}`, req)
+  const resp = await put(`/chat/conversation/${req.id.toString()}`, req)
   return Promise.resolve(resp.data)
 }
 
-export async function deleteMessageAPI(id: number, more?: boolean): Promise<void> {
+export async function deleteMessageAPI(id: BigInt, more?: boolean): Promise<void> {
   const resp = await del(`/chat/message/${id}${more ? '?more=1' : ''}`)
   return Promise.resolve(resp.data)
 }

@@ -7,9 +7,18 @@ const authStore = useAuthStore()
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
+  headers: { 'Content-Type': 'application/json' },
   timeout: 60000,
   transformResponse: (data: any) => {
-    return JSONBigInt.parse(data)
+    return JSONBigInt({ useNativeBigInt: true }).parse(data)
+  },
+  transformRequest: (data) => {
+    if (data) {
+      return JSON.stringify(data, (_, value) => {
+        return typeof value === 'bigint' ? value.toString() : value
+      })
+    }
+    return data
   }
 })
 

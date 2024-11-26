@@ -2,20 +2,20 @@ import { Time, PaginationReq, PaginationResp } from '../base'
 import { User } from '../user'
 
 export interface Plugin {
-  id: number;
-  key: number;
+  id: BigInt;
+  key: BigInt;
   name: string;
   description: string;
   description_md: string;
-  author_id: number;
+  author_id: BigInt;
   author?: User;
   is_private: boolean;
   home_page: string;
   enable_secret: boolean;
   secrets: PluginSecret[];
-  label_ids: number[];
+  label_ids: BigInt[];
   labels: PluginLabel[];
-  tool_ids: number[];
+  tool_ids: BigInt[];
   tools?: PluginTool[];
   logo: string;
   created_at: Time;
@@ -31,22 +31,22 @@ export interface PluginSecret {
 }
 
 export interface PluginTool {
-  id: number;
+  id: BigInt;
   name: string;
   description: string;
-  plugin_id: number;
+  plugin_id: BigInt;
   plugin?: Plugin;
   request_type: string;
   response_type: string;
   api_url: string;
-  import_model_id?: number;
+  import_model_id?: BigInt;
   created_at: Time;
   updated_at: Time;
   tested_at?: Time;
 }
 
 export interface PluginLabel {
-  id: number;
+  id: BigInt;
   text: string;
   created_at: Time;
 }
@@ -66,7 +66,7 @@ export interface ListPluginLabelResp {
 }
 
 export interface CreatePluginReq {
-  key: number;
+  key: BigInt;
   name: string;
   description: string;
   description_md: string;
@@ -74,15 +74,15 @@ export interface CreatePluginReq {
   home_page: string;
   enable_secret: boolean;
   secrets: PluginSecret[];
-  label_ids: number[];
+  label_ids: BigInt[];
   label_texts: string[];
-  tool_ids: number[];
+  tool_ids: BigInt[];
   logo: string;
 }
 
 export interface UpdatePluginReq {
-  id: number;
-  key?: number;
+  id: BigInt;
+  key?: BigInt;
   name?: string;
   description?: string;
   description_md?: string;
@@ -90,18 +90,18 @@ export interface UpdatePluginReq {
   home_page?: string;
   enable_secret?: boolean;
   secrets?: PluginSecret[];
-  label_ids?: number[];
+  label_ids?: BigInt[];
   label_texts?: string[];
-  tool_ids?: number[];
+  tool_ids?: BigInt[];
   logo?: string;
 }
 
 export interface ListPluginReq {
   pagination?: PaginationResp;
-  author_id?: number;
+  author_id?: BigInt;
   name?: string;
   description?: string;
-  labels?: number[];
+  labels?: BigInt[];
 }
 
 export interface ListPluginResp {
@@ -112,28 +112,28 @@ export interface ListPluginResp {
 export interface CreatePluginToolReq {
   name: string;
   description: string;
-  plugin_id: number;
+  plugin_id: BigInt;
   request_type: string;
   response_type: string;
   api_url: string;
-  import_model_id?: number;
+  import_model_id?: BigInt;
 }
 
 export interface UpdatePluginToolReq {
-  id: number;
+  id: BigInt;
   name?: string;
   description?: string;
-  plugin_id?: number;
+  plugin_id?: BigInt;
   request_type?: string;
   response_type?: string;
   api_url?: string;
-  import_model_id?: number;
+  import_model_id?: BigInt;
 }
 
 export interface ListPluginToolReq {
   pagination: PaginationReq;
-  plugin_id?: number;
-  tool_ids?: number[];
+  plugin_id?: BigInt;
+  tool_ids?: BigInt[];
 }
 
 export interface ListPluginToolResp {
@@ -142,8 +142,8 @@ export interface ListPluginToolResp {
 }
 
 export interface CallPluginToolReq {
-  plugin_id: number;
-  tool_id: number;
+  plugin_id: BigInt;
+  tool_id: BigInt;
   secrets?: { [key: string]: string };
   request: string;
 }
@@ -163,7 +163,7 @@ export interface TestPluginToolResp {
 }
 
 export interface ListPluginByToolsReq {
-  tool_ids: number[];
+  tool_ids: BigInt[];
 }
 
 export interface ListPluginByToolsResp {

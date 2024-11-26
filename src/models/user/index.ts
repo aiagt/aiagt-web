@@ -1,7 +1,7 @@
 import { Time } from '@/models/base'
 
 export interface User {
-  id: number;
+  id: BigInt;
   username: string;
   email: string;
   phone_number: string;

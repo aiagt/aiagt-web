@@ -19,7 +19,7 @@ import AiSpin from '@c/ai-spin/ai-spin.vue'
 
 const router = useRouter()
 const route = useRoute()
-const appID = Number(route.params.id)
+const appID = String(route.params.id)
 
 const app = reactive({} as App & { private_tools_count?: number })
 const conversations = reactive([] as (Conversation & { editing?: boolean; editing_title?: string })[])

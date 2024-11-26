@@ -52,14 +52,14 @@ export interface MessageContent {
 }
 
 export interface ChatReq {
-  conversation_id?: number;
-  app_id: number;
+  conversation_id?: BigInt;
+  app_id: BigInt;
   messages: MessageContent[];
 }
 
 export interface ChatResp {
   messages: Message[];
-  conversation_id: number;
+  conversation_id: BigInt;
   conversation_title?: string;
 }
 
@@ -69,17 +69,17 @@ export interface ChatRespMessage {
 }
 
 export interface Conversation {
-  id: number;
-  user_id: number;
-  app_id: number;
+  id: BigInt;
+  user_id: BigInt;
+  app_id: BigInt;
   title: string;
   created_at: Time;
   updated_at: Time;
 }
 
 export interface Message {
-  id: number;
-  conversation_id: number;
+  id: BigInt;
+  conversation_id: BigInt;
   role: MessageRole;
   content: MessageContent;
   created_at: Time;
@@ -87,13 +87,13 @@ export interface Message {
 }
 
 export interface UpdateMessageReq {
-  id: number;
+  id: BigInt;
   message: MessageContent;
 }
 
 export interface ListMessageReq {
   pagination?: PaginationReq;
-  conversation_id: number;
+  conversation_id: BigInt;
 }
 
 export interface ListMessageResp {
@@ -102,13 +102,13 @@ export interface ListMessageResp {
 }
 
 export interface UpdateConversationReq {
-  id: number;
+  id: BigInt;
   title: string;
 }
 
 export interface ListConversationReq {
   pagination?: PaginationResp;
-  app_id: number;
+  app_id: string;
 }
 
 export interface ListConversationResp {
@@ -117,7 +117,7 @@ export interface ListConversationResp {
 }
 
 export interface InitDevelopReq {
-  app_id: number;
+  app_id: BigInt;
 }
 
 export interface InitDevelopResp {

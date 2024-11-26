@@ -23,7 +23,7 @@ import AiSpin from '@c/ai-spin/ai-spin.vue'
 const route = useRoute()
 const router = useRouter()
 
-const id = Number(route.params.id)
+const id = String(route.params.id)
 const app = reactive({} as App)
 const appStore = useApplicationStore()
 
@@ -82,7 +82,7 @@ async function init() {
 
   const appCopy = deepClone(app)
   appStore.initInputAppInfo(appCopy)
-  appStore.initAppLabels()
+  await appStore.initAppLabels()
 
 
   if (app.tools?.length) {
