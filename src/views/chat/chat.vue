@@ -157,7 +157,7 @@ function chat(messages?: MessageContent[]) {
   chatAPI(
     {
       app_id: appInfo.id,
-      conversation_id: conversation.id,
+      conversation_id: conversation.id || undefined, // avoid 0 case
       messages: messages || []
     },
     (event: string, data: ChatResp | string) => {

@@ -10,6 +10,7 @@ import {
 import { sse } from '@/utils/sse.ts'
 import { useAuthStore } from '@/store/auth.ts'
 import { del, get, post, put } from '@/api/axios'
+import JSONBigInt from 'json-bigint'
 
 const authStore = useAuthStore()
 
@@ -28,7 +29,7 @@ export function chatAPI(
   sse(`${import.meta.env.VITE_API_BASE_URL}/chat/chat`, req, headers, message => {
     switch (message.event) {
       case 'chunk':
-        onMessage(message.event, JSON.parse(message.data) as ChatResp)
+        onMessage(message.event, JSONBigInt.parse(message.data) as ChatResp)
         break
       default:
         onMessage(message.event, message.data)
