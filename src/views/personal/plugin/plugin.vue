@@ -118,6 +118,9 @@ function changePluginLabel(value: any) {
       case 'bigint':
         pluginConfig.info.label_ids.push(label)
         break
+      case 'number':
+        pluginConfig.info.label_ids.push(label)
+        break
     }
   }
 }

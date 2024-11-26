@@ -46,6 +46,9 @@ const modalConfig = reactive({
         case 'bigint':
           modalConfig.createPluginReq.label_ids.push(label)
           break
+        case 'number':
+          modalConfig.createPluginReq.label_ids.push(label)
+          break
       }
     }
   }

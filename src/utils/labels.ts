@@ -1,5 +1,5 @@
 export function parseLabels(value: any): {
-  label_ids: BigInt[];
+  label_ids: BigInt [];
   label_texts: string[];
 } {
   if (!value) return { label_ids: [], label_texts: [] }
@@ -13,6 +13,9 @@ export function parseLabels(value: any): {
         label_texts.push(label)
         break
       case 'bigint':
+        label_ids.push(label)
+        break
+      case 'number':
         label_ids.push(label)
         break
     }

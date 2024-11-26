@@ -45,6 +45,9 @@ const modalConfig = reactive({
         case 'string':
           modalConfig.createAppReq.label_texts.push(label)
           break
+        case 'bigint':
+          modalConfig.createAppReq.label_ids.push(label)
+          break
         case 'number':
           modalConfig.createAppReq.label_ids.push(label)
           break
