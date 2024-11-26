@@ -96,7 +96,7 @@ const pinnedLabels = computed(() => {
             allow-clear
             v-model="listAppConfig.selected_label"
             @change="(value: number | undefined) => {
-                if (value) listAppConfig.label_ids = [value]
+                if (value) listAppConfig.label_ids = [BigInt(value)]
                 else listAppConfig.label_ids = undefined
                 init()
               }"
@@ -155,7 +155,7 @@ const pinnedLabels = computed(() => {
             <card
               class="h-auto"
               v-for="app of apps"
-              :key="app.id"
+              :key="app.id.toString()"
               :app="app"
             />
           </div>

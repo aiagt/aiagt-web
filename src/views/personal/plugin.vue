@@ -34,7 +34,7 @@ const modalConfig = reactive({
 
   changeLabels: (value: any) => {
     if (!value) return
-    const labels = value as (number | string)[]
+    const labels = value as (BigInt | string)[]
     modalConfig.createPluginReq.label_ids = []
     modalConfig.createPluginReq.label_texts = []
 
@@ -43,7 +43,7 @@ const modalConfig = reactive({
         case 'string':
           modalConfig.createPluginReq.label_texts.push(label)
           break
-        case 'number':
+        case 'bigint':
           modalConfig.createPluginReq.label_ids.push(label)
           break
       }

@@ -1,10 +1,10 @@
 export function parseLabels(value: any): {
-  label_ids: number[];
+  label_ids: BigInt[];
   label_texts: string[];
 } {
   if (!value) return { label_ids: [], label_texts: [] }
-  const labels = value as (number | string)[]
-  const label_ids: number[] = []
+  const labels = value as (BigInt | string)[]
+  const label_ids: BigInt[] = []
   const label_texts: string[] = []
 
   for (const label of labels) {
@@ -12,7 +12,7 @@ export function parseLabels(value: any): {
       case 'string':
         label_texts.push(label)
         break
-      case 'number':
+      case 'bigint':
         label_ids.push(label)
         break
     }

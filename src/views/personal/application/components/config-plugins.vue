@@ -45,7 +45,7 @@ async function init() {
 
 init()
 
-const focusedPluginID = ref<number>()
+const focusedPluginID = ref<BigInt>()
 </script>
 
 <template>
@@ -60,7 +60,7 @@ const focusedPluginID = ref<number>()
         <ai-list v-if="plugins.length" class="overflow-y-auto !bg-transparent w-full">
           <ai-list-item
             v-for="plugin of plugins"
-            :key="plugin.id"
+            :key="plugin.id.toString()"
             class="!px-2"
             :class="focusedPluginID !== plugin.id ? 'hover:!bg-gray-50' : ''"
             focus-class="!bg-gray-100"
@@ -77,7 +77,7 @@ const focusedPluginID = ref<number>()
               <div class="flex flex-wrap gap-1">
                 <div
                   v-for="label in plugin.labels"
-                  :key="label.id"
+                  :key="label.id.toString()"
                   class="px-1 py-0 rounded-sm bg-gray-50 text-gray-600 text-xs !text-[10px]"
                 >
                   {{ label.text }}

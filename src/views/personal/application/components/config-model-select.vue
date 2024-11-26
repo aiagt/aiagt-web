@@ -7,7 +7,7 @@ const modelStore = useModelStore()
 const modelOptions = modelStore.modelOptions
 
 const props = withDefaults(defineProps<{
-  modelValue?: number
+  modelValue?: BigInt
 }>(), {})
 
 const emits = defineEmits(['update:modelValue'])

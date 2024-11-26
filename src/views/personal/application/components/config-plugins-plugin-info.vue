@@ -10,7 +10,7 @@ import { asset } from '@/models/assets'
 import AiSpin from '@c/ai-spin/ai-spin.vue'
 
 const props = defineProps<{
-  pluginId?: number
+  pluginId?: BigInt
 }>()
 
 const plugin = reactive({} as Plugin)
@@ -32,7 +32,7 @@ watch(props, async () => {
 
 const appStore = useApplicationStore()
 
-function movePluginTool(toolID: number) {
+function movePluginTool(toolID: BigInt) {
   if (appStore.inputAppInfo.tool_ids?.length) {
     const idx = appStore.inputAppInfo.tool_ids.indexOf(toolID)
     if (idx >= 0) {
@@ -46,7 +46,7 @@ function movePluginTool(toolID: number) {
   appStore.inputAppInfo.tool_ids.push(toolID)
 }
 
-function hasPluginTool(toolID: number) {
+function hasPluginTool(toolID: BigInt) {
   return appStore.inputAppInfo.tool_ids?.length && appStore.inputAppInfo.tool_ids?.includes(toolID)
 }
 </script>
@@ -80,7 +80,7 @@ function hasPluginTool(toolID: number) {
         <div class="flex gap-2 flex-wrap">
           <div
             v-for="label of plugin.labels"
-            :key="label.id"
+            :key="label.id.toString()"
             class="text-[10px] px-1.5 py-0.5 rounded-[0.275rem] bg-gray-200 text-gray-700"
           >
             {{ label.text }}

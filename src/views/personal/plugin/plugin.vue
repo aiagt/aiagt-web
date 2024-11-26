@@ -54,8 +54,8 @@ const pluginConfig = reactive({
     description?: string,
     home_page?: string,
     is_private?: boolean,
-    label_values: (number | string)[],
-    label_ids?: number[],
+    label_values: (BigInt | string)[],
+    label_ids?: BigInt[],
     label_texts?: string[],
     logo: string
   },
@@ -106,7 +106,7 @@ async function savePluginSecret() {
 
 function changePluginLabel(value: any) {
   if (!value) return
-  const labels = value as (number | string)[]
+  const labels = value as (BigInt | string)[]
   pluginConfig.info.label_ids = []
   pluginConfig.info.label_texts = []
 
@@ -115,7 +115,7 @@ function changePluginLabel(value: any) {
       case 'string':
         pluginConfig.info.label_texts.push(label)
         break
-      case 'number':
+      case 'bigint':
         pluginConfig.info.label_ids.push(label)
         break
     }
@@ -487,7 +487,7 @@ init().then(() => {
             <div class="flex flex-col gap-4">
               <div
                 v-for="(tool, index) of plugin.tools"
-                :key="tool.id"
+                :key="tool.id.toString()"
                 class="flex items-center gap-2 p-2.5 rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 active:bg-gray-200 transition duration-300"
                 :class="{ '!bg-gray-100': focusedToolIndex === index }"
                 @click="focusedToolIndex = index"

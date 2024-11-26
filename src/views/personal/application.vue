@@ -36,7 +36,7 @@ const modalConfig = reactive({
 
   changeLabels: (value: any) => {
     if (!value) return
-    const labels = value as (number | string)[]
+    const labels = value as (BigInt | string)[]
     modalConfig.createAppReq.label_ids = []
     modalConfig.createAppReq.label_texts = []
 
@@ -69,7 +69,7 @@ async function init() {
   listCfg.apps = listAppResp.apps
   listCfg.pagination = listAppResp.pagination
 
-  appStore.initAppLabels()
+  await appStore.initAppLabels()
 }
 
 const loading = ref(true)

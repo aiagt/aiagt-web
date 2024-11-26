@@ -15,7 +15,7 @@ import AiImage from '@c/ai-image/ai-image.vue'
 const props = defineProps<{
   app: App;
   dev?: boolean;
-  conversation_id?: number;
+  conversation_id?: BigInt;
   scrollBy?: any;  // for scrolling to the bottom
 }>()
 
@@ -26,7 +26,7 @@ const conversation = reactive({
   messages: [],
   inputMessage: ''
 } as {
-  id?: number;
+  id?: BigInt;
   messages: Message[];
   inputMessage: string;
 })
@@ -183,8 +183,8 @@ function chat(messages?: MessageContent[]) {
   if (messages) {
     const now = Date.now()
     conversation.messages.push({
-      id: now,
-      conversation_id: conversation.id || 0,
+      id: BigInt(now),
+      conversation_id: conversation.id || BigInt(0),
       role: MessageRole.USER,
       content: { type: MessageType.TEXT, content: { text: { text: conversation.inputMessage } } },
       created_at: new Time({ timestamp: now }),
@@ -218,7 +218,7 @@ function handleChatChunk(chunk: ChatResp, status: ChatStatus) {
 
         const now = Date.now()
         const newMsg = {
-          id: now,
+          id: BigInt(now),
           conversation_id: chunk.conversation_id,
           role: message.role,
           content: { type: content.type, content: {} },
@@ -301,7 +301,7 @@ function sendMsg(e?: Event) {
   }
 }
 
-function deleteMessage(messageID: number, idx: number) {
+function deleteMessage(messageID: BigInt, idx: number) {
   conversation.messages.splice(idx, 1)
   deleteMessageAPI(messageID).then(_ => {
     ArcoMessage.success('delete message success')
@@ -312,7 +312,7 @@ const updateMsgStatus = reactive({
   id: undefined,
   text: undefined
 } as {
-  id?: number;
+  id?: BigInt;
   text?: string;
 })
 

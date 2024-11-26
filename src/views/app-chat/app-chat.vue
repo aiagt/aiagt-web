@@ -49,7 +49,7 @@ loadConversations().then(() => {
   loadingConversation.value = false
 })
 
-const focusedConversationID = ref<number | undefined>()
+const focusedConversationID = ref<BigInt | undefined>()
 
 const smallWindow = ref(window.innerWidth <= 768)
 
@@ -85,7 +85,7 @@ function updateConversation(conversation: Conversation & { editing?: boolean; ed
 }
 
 // delete conversation
-function deleteConversation(id: number, idx: number) {
+function deleteConversation(id: BigInt, idx: number) {
   deleteConversationAPI(id).then(_ => {
     Message.success('delete conversation success')
 
@@ -259,7 +259,7 @@ function deleteConversation(id: number, idx: number) {
 
             <div
               class="flex justify-center items-center gap-2 py-2.5 rounded-lg bg-[#e7ebf6] border-[#cad6f6] border-[0.5px] text-[12px] font-medium text-[#4b6ce9] cursor-pointer"
-              @click="focusedConversationID = focusedConversationID === undefined ? 0 : undefined"
+              @click="focusedConversationID = focusedConversationID === undefined ? BigInt(0) : undefined"
             >
               <icon-plus :stroke-width="6" stroke-linejoin="round" stroke-linecap="round" />
               New Conversation
