@@ -314,6 +314,7 @@ async function init() {
   }
 
   const getPluginResp = await getPluginByKey({ key: route.params.key })
+  plugin.tools = undefined
   Object.assign(plugin, getPluginResp)
   resetPluginInfo()
   resetPluginSecrets()
@@ -485,9 +486,9 @@ init().then(() => {
       <!-- Body - Tool list -->
       <div class="p-3 min-w-[240px]">
         <div class="border rounded-2xl h-full p-4 flex flex-col justify-between bg-white">
-          <div class="flex flex-col gap-3">
+          <div class="flex-1 flex flex-col gap-3">
             <div class="text-lg text-black font-medium pl-1 py-2">Tool List</div>
-            <div class="flex flex-col gap-4">
+            <div v-if="plugin.tools?.length" class="flex flex-col gap-4">
               <div
                 v-for="(tool, index) of plugin.tools"
                 :key="tool.id.toString()"
@@ -515,6 +516,9 @@ init().then(() => {
                   </div>
                 </div>
               </div>
+            </div>
+            <div v-else class="flex-1 flex justify-center items-center">
+              <a-empty />
             </div>
           </div>
           <button
@@ -648,6 +652,9 @@ init().then(() => {
               />
             </a-collapse-item>
           </a-collapse>
+        </div>
+        <div v-else-if="!focusedTool || !plugin.tools?.length" class="h-full flex justify-center items-center">
+          <a-empty />
         </div>
       </div>
 
