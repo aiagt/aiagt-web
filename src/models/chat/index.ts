@@ -5,14 +5,17 @@ export enum MessageType {
   IMAGE,
   FILE,
   FUNCTION,
-  FUNCTION_CALL
+  FUNCTION_CALL,
+  TOOL,
+  TOOL_CALL
 }
 
 export enum MessageRole {
   USER,
   ASSISTANT,
   SYSTEM,
-  FUNCTION
+  FUNCTION,
+  TOOL
 }
 
 export interface MessageContentValue {
@@ -21,6 +24,8 @@ export interface MessageContentValue {
   file?: MessageContentValueFile;
   func?: MessageContentValueFunc;
   func_call?: MessageContentValueFuncCall;
+  tool?: MessageContentValueTool;
+  tool_call?: MessageContentValueToolCall;
 }
 
 export interface MessageContentValueText {
@@ -46,20 +51,32 @@ export interface MessageContentValueFuncCall {
   arguments: string;
 }
 
+export interface MessageContentValueTool {
+  id: string;
+  name: string;
+  content: string;
+}
+
+export interface MessageContentValueToolCall {
+  id: string;
+  name: string;
+  arguments: string;
+}
+
 export interface MessageContent {
   type: MessageType;
   content: MessageContentValue;
 }
 
 export interface ChatReq {
-  conversation_id?: number;
-  app_id: number;
+  conversation_id?: BigInt;
+  app_id: BigInt;
   messages: MessageContent[];
 }
 
 export interface ChatResp {
   messages: Message[];
-  conversation_id: number;
+  conversation_id: BigInt;
   conversation_title?: string;
 }
 
@@ -69,17 +86,17 @@ export interface ChatRespMessage {
 }
 
 export interface Conversation {
-  id: number;
-  user_id: number;
-  app_id: number;
+  id: BigInt;
+  user_id: BigInt;
+  app_id: BigInt;
   title: string;
   created_at: Time;
   updated_at: Time;
 }
 
 export interface Message {
-  id: number;
-  conversation_id: number;
+  id: BigInt;
+  conversation_id: BigInt;
   role: MessageRole;
   content: MessageContent;
   created_at: Time;
@@ -87,13 +104,13 @@ export interface Message {
 }
 
 export interface UpdateMessageReq {
-  id: number;
+  id: BigInt;
   message: MessageContent;
 }
 
 export interface ListMessageReq {
   pagination?: PaginationReq;
-  conversation_id: number;
+  conversation_id: BigInt;
 }
 
 export interface ListMessageResp {
@@ -102,13 +119,13 @@ export interface ListMessageResp {
 }
 
 export interface UpdateConversationReq {
-  id: number;
+  id: BigInt;
   title: string;
 }
 
 export interface ListConversationReq {
   pagination?: PaginationResp;
-  app_id: number;
+  app_id: string;
 }
 
 export interface ListConversationResp {
@@ -117,7 +134,7 @@ export interface ListConversationResp {
 }
 
 export interface InitDevelopReq {
-  app_id: number;
+  app_id: BigInt;
 }
 
 export interface InitDevelopResp {

@@ -4,13 +4,13 @@ import { useRouter } from 'vue-router'
 import { asset } from '@/models/assets'
 
 defineProps<{
-  id?: number
+  id?: BigInt
   name?: string
   logo?: string
   time?: Time
   description?: string
   labels?: {
-    id: number
+    id: BigInt
     text: string
   }[]
   link?: string
@@ -46,7 +46,7 @@ const router = useRouter()
         <div class="flex flex-wrap gap-1">
           <div
             v-for="label of labels"
-            :key="label.id"
+            :key="label.id.toString()"
             class="rounded bg-gray-100 text-xs px-1.5 py-0.5 scale-90 text-gray-700"
           >
             {{ label.text }}
@@ -66,15 +66,6 @@ const router = useRouter()
 </template>
 
 <style scoped>
-.line-2 {
-  display: -webkit-box;
-  line-clamp: 2;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .personal-card:hover {
   .personal-card-chat {
     display: flex;

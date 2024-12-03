@@ -93,20 +93,24 @@
 
     /* title */
 
+    h1 {
+        @apply text-xl;
+    }
+
     h2 {
-        @apply text-2xl my-[0.5rem];
+        @apply text-lg my-[0.5rem];
     }
 
     h3 {
-        @apply text-xl my-[0.4rem];
+        @apply text-lg !text-[16px] my-[0.4rem];
     }
 
     h4 {
-        @apply text-lg my-[0.3rem];
+        @apply text-[16px] my-[0.3rem];
     }
 
     h5 {
-        @apply text-lg text-[16px] my-[0.2rem];
+        @apply text-[14px] my-[0.2rem];
     }
 
     h6 {

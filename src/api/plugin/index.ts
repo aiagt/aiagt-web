@@ -24,7 +24,7 @@ export async function createPluginAPI(req: CreatePluginReq): Promise<{}> {
   return Promise.resolve(resp.data)
 }
 
-export async function getPluginByID(id: number): Promise<Plugin> {
+export async function getPluginByID(id: BigInt): Promise<Plugin> {
   const resp = await get(`/plugin/${id}`)
   return Promise.resolve(resp.data)
 }
@@ -49,7 +49,7 @@ export async function createPluginToolAPI(req: CreatePluginToolReq): Promise<{}>
   return Promise.resolve(resp.data)
 }
 
-export async function deletePluginToolAPI(id: number): Promise<{}> {
+export async function deletePluginToolAPI(id: BigInt): Promise<{}> {
   const resp = await del(`/plugin/tool/${id}`)
   return Promise.resolve(resp.data)
 }

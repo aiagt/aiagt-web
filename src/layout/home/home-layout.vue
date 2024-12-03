@@ -103,7 +103,7 @@ const router = useRouter()
             <ai-list class="!bg-white !rounded-lg !p-1 border-[0.5px]">
               <ai-list-item
                 class="hover:!bg-gray-100 !rounded-md !px-1"
-                inner-class="!pl-2 !pr-3 !justify-start !py-2 !gap-3"
+                inner-class="!pl-2 !pr-3 !justify-start !py-2 !gap-3 text-gray-800"
               >
                 <img :src="asset(authStore.userinfo.avatar)" :alt="authStore.userinfo.username" class="w-8 h-8 rounded-full bg-white">
                 <div

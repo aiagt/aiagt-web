@@ -3,23 +3,23 @@ import { User } from '@/models/user'
 import { PluginTool } from '@/models/plugin'
 
 export interface App {
-  id: number;
+  id: BigInt;
   name: string;
   description: string;
   description_md: string;
-  model_id: number;
+  model_id: BigInt;
   enable_image: boolean;
   enable_file: boolean;
   version: string;
   is_private: boolean;
   home_page: string;
   preset_questions: string[];
-  tool_ids: number[];
+  tool_ids: BigInt[];
   tools: PluginTool[];
   logo: string;
-  author_id: number;
+  author_id: BigInt;
   author?: User;
-  label_ids: number[];
+  label_ids: BigInt[];
   labels: AppLabel[];
   model_config: ModelConfig;
   created_at: Time;
@@ -49,45 +49,46 @@ export interface CreateAppReq {
   name: string;
   description: string;
   description_md: string;
-  model_id: number;
+  model_id: BigInt;
   enable_image: boolean;
   enable_file: boolean;
   version: string;
   is_private: boolean;
   home_page: string;
   preset_questions: string[];
-  tool_ids: number[];
+  tool_ids: BigInt[];
   logo: string;
-  label_ids: number[];
+  label_ids: BigInt[];
   label_texts: string[];
   model_config: ModelConfig;
 }
 
 export interface UpdateAppReq {
-  id: number;
+  id: string;
   name?: string;
   description?: string;
   description_md?: string;
-  model_id?: number;
+  model_id?: BigInt;
   enable_image?: boolean;
   enable_file?: boolean;
   version?: string;
   is_private?: boolean;
   home_page?: string;
   preset_questions?: string[];
-  tool_ids?: number[];
+  tool_ids?: BigInt[];
   logo?: string;
-  label_ids?: number[];
+  label_ids?: BigInt[];
   label_texts?: string[];
   model_config?: ModelConfig;
 }
 
 export interface ListAppReq {
   pagination?: PaginationReq;
-  author_id?: number;
+  author_id?: BigInt;
   name?: string;
   description?: string;
-  labels?: string[];
+  label_ids?: BigInt[];
+  with_author?: boolean;
 }
 
 export interface ListAppResp {
@@ -96,19 +97,20 @@ export interface ListAppResp {
 }
 
 export interface PublishAppReq {
-  id: number;
+  id: BigInt;
   version: string;
 }
 
 export interface AppLabel {
-  id: number;
+  id: BigInt;
   text: string;
+  pinned?: number;
   created_at: Time;
 }
 
-export interface ListAppLabelReq {
-  pagination?: PaginationReq;
+export interface ListAppLabelReq extends PaginationReq {
   text?: string;
+  pinned?: boolean;
 }
 
 export interface ListAppLabelResp {
@@ -117,7 +119,7 @@ export interface ListAppLabelResp {
 }
 
 export interface GetAppByIDReq {
-  id: number;
+  id: BigInt;
   unfold?: boolean;
 }
 

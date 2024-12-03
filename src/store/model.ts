@@ -10,7 +10,7 @@ export const useModelStore = defineStore('model', () => {
     modelOptions.push(...resp.models)
   })
 
-  function getModel(id?: number): Model {
+  function getModel(id?: BigInt): Model {
     for (const model of modelOptions) {
       if (model.id === id) {
         return model
