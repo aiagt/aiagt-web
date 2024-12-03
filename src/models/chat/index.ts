@@ -5,14 +5,17 @@ export enum MessageType {
   IMAGE,
   FILE,
   FUNCTION,
-  FUNCTION_CALL
+  FUNCTION_CALL,
+  TOOL,
+  TOOL_CALL
 }
 
 export enum MessageRole {
   USER,
   ASSISTANT,
   SYSTEM,
-  FUNCTION
+  FUNCTION,
+  TOOL
 }
 
 export interface MessageContentValue {
@@ -21,6 +24,8 @@ export interface MessageContentValue {
   file?: MessageContentValueFile;
   func?: MessageContentValueFunc;
   func_call?: MessageContentValueFuncCall;
+  tool?: MessageContentValueTool;
+  tool_call?: MessageContentValueToolCall;
 }
 
 export interface MessageContentValueText {
@@ -42,6 +47,18 @@ export interface MessageContentValueFunc {
 }
 
 export interface MessageContentValueFuncCall {
+  name: string;
+  arguments: string;
+}
+
+export interface MessageContentValueTool {
+  id: string;
+  name: string;
+  content: string;
+}
+
+export interface MessageContentValueToolCall {
+  id: string;
   name: string;
   arguments: string;
 }

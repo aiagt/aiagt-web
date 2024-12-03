@@ -21,6 +21,8 @@ export interface Model {
   logo: string;
   input_price: string;
   output_price: string;
+  max_token: number;
+  tags: string[];
 }
 
 export interface CreateModelReq {

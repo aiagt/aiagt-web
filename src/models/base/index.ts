@@ -3,7 +3,7 @@ import { format } from 'date-fns'
 export class Time {
   timestamp?: number
 
-  constructor(time: { timestamp?: number }) {
+  constructor(time?: { timestamp?: number }) {
     this.timestamp = time?.timestamp
   }
 
