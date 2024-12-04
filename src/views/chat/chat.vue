@@ -5,7 +5,7 @@ import { chatAPI, deleteMessageAPI, initDevelopAPI, listMessageAPI, updateMessag
 import { ChatResp, ListMessageReq, Message, MessageContent, MessageRole, MessageType } from '@/models/chat'
 import { Message as ArcoMessage } from '@arco-design/web-vue'
 import { NewTime, Time } from '@/models/base'
-import { mark } from '@/assets/marked'
+import { mark, onClickMarked } from '@/assets/marked'
 import { IconPlugin } from '@arco-iconbox/vue-aiagt'
 import { clipboardCopy } from '@/utils/copy.ts'
 import { debounce } from '@arco-design/web-vue/es/_utils/debounce'
@@ -451,12 +451,14 @@ function regenerate(idx: number) {
           <div
             v-if="mg.type === 'text' && mg.msg?.role === MessageRole.USER && mg.msg?.content.type === MessageType.TEXT"
             class="px-3 py-2 rounded-xl bg-[#ebeced] marked"
+            style="white-space: pre-wrap;"
             v-text="mg.msg?.content.content.text?.text"
           />
           <div
             v-else-if="mg.type === 'text' && mg.msg?.role === MessageRole.ASSISTANT && mg.msg?.content.type === MessageType.TEXT"
             class="pt-2 pb-0 rounded-xl marked"
             v-html="mark(mg.msg?.content.content.text?.text || '')"
+            @click="onClickMarked"
           />
           <div
             v-else-if="mg.type === 'other'"
@@ -560,7 +562,7 @@ function regenerate(idx: number) {
         </div>
       </div>
       <div
-        class=" mt-2 px-1.5 py-1 flex gap-4 items-end rounded-[1.5rem] border bg-[#fafafa] question-input shadow-xl shadow-gray-200 "
+        class=" mt-2 px-1.5 py-1 flex items-end rounded-[1.5rem] border bg-[#fafafa] question-input shadow-xl shadow-gray-200"
       >
         <a-textarea
           class="flex-1 !px-2"
@@ -570,7 +572,7 @@ function regenerate(idx: number) {
           v-model="updateMsgStatus.text"
           @keydown.enter="updateMsg"
           ref="updateMsgInput"
-          auto-size
+          :auto-size="{maxRows: 20}"
         />
         <a-textarea
           class="flex-1 !px-2"
@@ -580,7 +582,7 @@ function regenerate(idx: number) {
           v-model="conversation.inputMessage"
           @keydown.enter="sendMsg"
           ref="msgInput"
-          auto-size
+          :auto-size="{maxRows: 20}"
         />
         <button
           class="bg-black text-white text-lg rounded-full my-0.5 !w-8 !h-8 flex justify-center items-center"

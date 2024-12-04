@@ -62,7 +62,12 @@
         @apply text-xs w-full text-wrap;
 
         .code-language {
-            @apply rounded-t-lg bg-[#fafbfc] border-b border-gray-200 px-4.5 py-[0.625rem] text-black;
+            @apply rounded-t-lg bg-[#fafbfc] border-b border-gray-200 px-4.5 py-[0.35rem] text-gray-700;
+            @apply flex justify-between items-center;
+
+            .code-copy {
+                @apply rounded-md hover:bg-gray-100 active:bg-gray-200 transition p-[0.325rem];
+            }
         }
 
         .code-box {
