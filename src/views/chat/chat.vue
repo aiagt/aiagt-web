@@ -5,15 +5,17 @@ import { chatAPI, deleteMessageAPI, initDevelopAPI, listMessageAPI, updateMessag
 import { ChatResp, ListMessageReq, Message, MessageContent, MessageRole, MessageType } from '@/models/chat'
 import { Message as ArcoMessage } from '@arco-design/web-vue'
 import { NewTime, Time } from '@/models/base'
-import { mark } from '@/assets/marked'
+import { mark, onClickMarked } from '@/assets/marked'
 import { IconPlugin } from '@arco-iconbox/vue-aiagt'
 import { clipboardCopy } from '@/utils/copy.ts'
 import { debounce } from '@arco-design/web-vue/es/_utils/debounce'
+import AiSpin from '@c/ai-spin/ai-spin.vue'
+import AiImage from '@c/ai-image/ai-image.vue'
 
 const props = defineProps<{
   app: App;
   dev?: boolean;
-  conversation_id?: number;
+  conversation_id?: BigInt;
   scrollBy?: any;  // for scrolling to the bottom
 }>()
 
@@ -24,22 +26,84 @@ const conversation = reactive({
   messages: [],
   inputMessage: ''
 } as {
-  id?: number;
+  id?: BigInt;
   messages: Message[];
   inputMessage: string;
 })
+
+interface messageGroup {
+  type: 'text' | 'other',
+  msg?: Message
+  msgs?: messageGroupOtherMsg[]
+}
+
+interface messageGroupOtherMsg {
+  type: 'call' | 'result',
+  name?: string,
+  content?: string
+}
+
+const messageGroups = computed(() => {
+  const result: messageGroup[] = []
+
+  for (let msg of conversation.messages) {
+    if (msg.content.type === MessageType.TEXT) {
+      result.push({ type: 'text', msg: msg })
+      continue
+    }
+
+    const len = result.length
+    if (len === 0 || result[len - 1].type === 'text') {
+      result.push({ type: 'other', msgs: [] })
+    }
+
+    const { type, content } = msg.content
+    const item = {} as messageGroupOtherMsg
+
+    switch (type) {
+      case MessageType.FUNCTION:
+        item.type = 'result'
+        item.name = content.func?.name
+        item.content = content.func?.content
+        break
+      case MessageType.FUNCTION_CALL:
+        item.type = 'call'
+        item.name = content.func_call?.name
+        item.content = content.func_call?.arguments
+        break
+      case MessageType.TOOL:
+        item.type = 'result'
+        item.name = content.tool?.name
+        item.content = content.tool?.content
+        break
+      case MessageType.TOOL_CALL:
+        item.type = 'call'
+        item.name = content.tool_call?.name
+        item.content = content.tool_call?.arguments
+        break
+    }
+
+    result[result.length - 1].msgs?.push(item)
+  }
+
+  return result
+})
+
+const loadingMessage = ref(false)
 
 watch(props.app, async () => {
   Object.assign(appInfo, props.app)
 
   if (props.dev) {
+    loadingMessage.value = true
     const resp = await initDevelopAPI({ app_id: props.app.id })
+    loadingMessage.value = false
 
     conversation.id = resp.conversation.id
     conversation.messages.splice(0, conversation.messages.length)
     conversation.messages.push(...resp.messages)
   }
-})
+}, { immediate: true })
 
 const chatRef = ref<HTMLElement | undefined>()
 
@@ -82,9 +146,15 @@ watch(computed(() => props.conversation_id), async () => {
   conversation.id = props.conversation_id
 
   if (props.conversation_id) {
-    const resp = await listMessageAPI({ conversation_id: props.conversation_id } as ListMessageReq)
-    conversation.messages.splice(0, conversation.messages.length)
-    conversation.messages.push(...resp.messages)
+    loadingMessage.value = true
+
+    try {
+      const resp = await listMessageAPI({ conversation_id: props.conversation_id } as ListMessageReq)
+      conversation.messages.splice(0, conversation.messages.length)
+      conversation.messages.push(...resp.messages)
+    } finally {
+      loadingMessage.value = false
+    }
   } else {
     conversation.messages.splice(0, conversation.messages.length)
   }
@@ -128,6 +198,14 @@ function updateLastMsg(msg: Message) {
       lastContent.content.func_call = content.content.func_call
       scrollToBottom()
       break
+    case MessageType.TOOL:
+      lastContent.content.tool = content.content.tool
+      scrollToBottom()
+      break
+    case MessageType.TOOL_CALL:
+      lastContent.content.tool_call = content.content.tool_call
+      scrollToBottom()
+      break
   }
 }
 
@@ -136,13 +214,16 @@ interface ChatStatus {
   isNewMessage: boolean;
 }
 
+const chatting = ref(false)
+
 function chat(messages?: MessageContent[]) {
   const status: ChatStatus = { isNewMessage: true }
+  chatting.value = true
 
   chatAPI(
     {
       app_id: appInfo.id,
-      conversation_id: conversation.id,
+      conversation_id: conversation.id || undefined, // avoid 0 case
       messages: messages || []
     },
     (event: string, data: ChatResp | string) => {
@@ -155,19 +236,21 @@ function chat(messages?: MessageContent[]) {
           break
         case 'done':
           console.log(conversation.messages)
+          chatting.value = false
           break
       }
     },
     error => {
       ArcoMessage.error(error)
+      chatting.value = false
     }
   )
 
   if (messages) {
     const now = Date.now()
     conversation.messages.push({
-      id: now,
-      conversation_id: conversation.id || 0,
+      id: BigInt(now),
+      conversation_id: conversation.id || BigInt(0),
       role: MessageRole.USER,
       content: { type: MessageType.TEXT, content: { text: { text: conversation.inputMessage } } },
       created_at: new Time({ timestamp: now }),
@@ -201,7 +284,7 @@ function handleChatChunk(chunk: ChatResp, status: ChatStatus) {
 
         const now = Date.now()
         const newMsg = {
-          id: now,
+          id: BigInt(now),
           conversation_id: chunk.conversation_id,
           role: message.role,
           content: { type: content.type, content: {} },
@@ -228,12 +311,16 @@ function handleChatChunk(chunk: ChatResp, status: ChatStatus) {
           case MessageType.FUNCTION_CALL:
             updateLastMsg(message)
             break
+          case MessageType.TOOL_CALL:
+            updateLastMsg(message)
+            break
         }
-
         break
       case MessageRole.FUNCTION:
         updateLastMsg(message)
-
+        break
+      case MessageRole.TOOL:
+        updateLastMsg(message)
         break
       default:
         console.log(message)
@@ -270,6 +357,8 @@ function isSendEvent(event?: KeyboardEvent) {
 }
 
 function sendMsg(e?: Event) {
+  if (chatting.value) return
+
   const event = e as KeyboardEvent | undefined
 
   if (isSendEvent(event) && conversation.inputMessage.trim().length) {
@@ -282,7 +371,9 @@ function sendMsg(e?: Event) {
   }
 }
 
-function deleteMessage(messageID: number, idx: number) {
+function deleteMessage(messageID: BigInt | undefined, idx: number) {
+  if (!messageID) return
+
   conversation.messages.splice(idx, 1)
   deleteMessageAPI(messageID).then(_ => {
     ArcoMessage.success('delete message success')
@@ -293,11 +384,13 @@ const updateMsgStatus = reactive({
   id: undefined,
   text: undefined
 } as {
-  id?: number;
+  id?: BigInt;
   text?: string;
 })
 
 async function updateMsg(e?: Event) {
+  if (chatting.value) return
+
   const event = e as KeyboardEvent | undefined
 
   const text = updateMsgStatus.text?.trim() || ''
@@ -348,99 +441,111 @@ function regenerate(idx: number) {
 
 <template>
   <div class="h-screen w-full flex flex-col items-center overflow-y-auto p-10" ref="chatRef">
-    <div class="flex flex-col gap-4 mb-10 flex-1 inner-container">
-      <div
-        v-for="(message, idx) of conversation.messages"
-        class="flex flex-col w-full"
-        :class="message.role === MessageRole.USER ? 'items-end' : 'items-start'"
-      >
+    <ai-spin :loading="loadingMessage" hide-icon>
+      <div class="flex flex-col gap-2 mb-10 flex-1 inner-container" v-if="conversation.messages?.length || chatting">
         <div
-          v-if="message.role === MessageRole.ASSISTANT && message.content.type === MessageType.TEXT"
-          class="pt-2 pb-0 rounded-xl marked"
-          v-html="mark(message.content.content.text?.text || '')"
-        />
-        <div
-          v-else-if="message.role === MessageRole.USER && message.content.type === MessageType.TEXT"
-          class="px-3 py-2 rounded-xl bg-[#ebeced] marked"
-          v-text="message.content.content.text?.text"
-        />
-        <div
-          v-else-if="((message.role === MessageRole.ASSISTANT && message.content.type === MessageType.FUNCTION_CALL) ||
-              (message.role === MessageRole.FUNCTION && message.content.type === MessageType.FUNCTION))"
-          class="bg-[#fafafa] border-[#ccc] border-[0.5px] px-4 py-2 rounded-xl flex flex-col gap-1 text-xs max-w-96 cursor-pointer hover:bg-[#f3f3f3]"
-          :class="{'!max-w-full': smallWindow}"
+          v-for="(mg, idx) of messageGroups"
+          class="flex flex-col w-full"
+          :class="mg.type === 'text' && mg.msg?.role === MessageRole.USER ? 'items-end' : 'items-start'"
         >
-          <div class="truncate flex items-center gap-2 text-gray-700">
-            <div class="text-[15px]">
-              <icon-plugin class="stroke-[100]" />
-            </div>
-            {{
-              message.content.type === MessageType.FUNCTION_CALL
-                ? message.content.content.func_call?.name
-                : message.content.content.func?.name
-            }}
-            <div
-              class="bg-white px-1 rounded-sm text-xs !text-[10px]"
-              :class="message.content.type === MessageType.FUNCTION_CALL ? 'text-purple-500' : 'text-blue-500'"
-            >
-              {{
-                message.content.type === MessageType.FUNCTION_CALL ? 'call' : 'result'
-              }}
-            </div>
-          </div>
-          <div class="truncate text-[10px] text-gray-400">
-            {{
-              message.content.type === MessageType.FUNCTION_CALL
-                ? message.content.content.func_call?.arguments
-                : message.content.content.func?.content
-            }}
-          </div>
-        </div>
-        <div v-else class="bg-black py-2">{{ message }}</div>
-        <div
-          class="py-2 px-1 text-gray-400 flex gap-2 text-xs !text-[11px] items-center"
-          v-if="message.content.type === MessageType.TEXT"
-        >
-          <div>{{ new Time(message.updated_at).string() }}</div>
-          <a-popconfirm
-            content="Are you sure you want to delete?"
-            @ok="deleteMessage(message.id, idx)"
+          <div
+            v-if="mg.type === 'text' && mg.msg?.role === MessageRole.USER && mg.msg?.content.type === MessageType.TEXT"
+            class="px-3 py-2 rounded-xl bg-[#ebeced] marked"
+            style="white-space: pre-wrap;"
+            v-text="mg.msg?.content.content.text?.text"
+          />
+          <div
+            v-else-if="mg.type === 'text' && mg.msg?.role === MessageRole.ASSISTANT && mg.msg?.content.type === MessageType.TEXT"
+            class="pt-2 pb-0 rounded-xl marked"
+            v-html="mark(mg.msg?.content.content.text?.text || '')"
+            @click="onClickMarked"
+          />
+          <div
+            v-else-if="mg.type === 'other'"
+            class="flex flex-col gap-1 p-1 rounded-xl border max-w-full bg-[#fafafa]"
           >
-            <icon-delete
+            <div class="p-1 text-xs !text-[11px] flex gap-2 items-center text-gray-500">
+              <div class="text-[13px]">
+                <icon-list />
+              </div>
+              Call Plugin
+            </div>
+            <div
+              v-for="message of mg.msgs"
+              class="bg-white border-[#eeeeee] border-[0.5px] px-2 py-1 rounded-lg flex flex-col gap-0.5 text-xs cursor-pointer hover:bg-[#f3f3f3] max-w-96"
+              :class="{'!max-w-full': smallWindow}"
+            >
+              <div class="truncate flex items-center gap-2 text-gray-700">
+                <div class="text-[15px]">
+                  <icon-plugin class="stroke-[100]" />
+                </div>
+                {{ message.name }}
+                <div
+                  class="bg-white px-1 rounded-sm text-xs !text-[10px]"
+                  :class="message.type === 'call' ? 'text-purple-500' : 'text-blue-500'"
+                >
+                  {{ message.type }}
+                </div>
+              </div>
+              <div
+                class="truncate text-[10px] text-gray-600"
+              >
+                {{ message.content }}
+              </div>
+            </div>
+          </div>
+          <div
+            class="py-2 text-gray-400 flex gap-2 text-xs !text-[11px] items-center"
+            v-if="mg.type === 'text'"
+          >
+            <div>{{ new Time(mg.msg?.updated_at).string() }}</div>
+            <a-popconfirm
+              content="Are you sure you want to delete?"
+              @ok="deleteMessage(mg.msg?.id, idx)"
+            >
+              <icon-delete
+                class="cursor-pointer"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </a-popconfirm>
+            <icon-copy
               class="cursor-pointer"
               stroke-linecap="round"
               stroke-linejoin="round"
-            />
-          </a-popconfirm>
-          <icon-copy
-            class="cursor-pointer"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            @click="() => {
-              const text = message.content.content.text?.text;
+              @click="() => {
+              const text = mg.msg?.content.content.text?.text;
               if (text) {
                 clipboardCopy(text)
                 ArcoMessage.info('Copied to clipboard')
               }
             }"
-          />
-          <icon-edit
-            class="cursor-pointer"
-            v-show="message.role === MessageRole.USER"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            @click="updateMsgStatus.id = message.id; updateMsgStatus.text = message.content.content.text?.text; focusUpdateMsgInput()"
-          />
-          <icon-refresh
-            class="cursor-pointer"
-            v-show="message.role === MessageRole.ASSISTANT"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            @click="regenerate(idx)"
-          />
+            />
+            <icon-edit
+              class="cursor-pointer"
+              v-show="mg.msg?.role === MessageRole.USER"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              @click="updateMsgStatus.id = mg.msg?.id; updateMsgStatus.text = mg.msg?.content.content.text?.text; focusUpdateMsgInput()"
+            />
+            <icon-refresh
+              class="cursor-pointer"
+              v-show="mg.msg?.role === MessageRole.ASSISTANT"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              @click="regenerate(idx)"
+            />
+          </div>
+        </div>
+        <div v-show="chatting" class="bg-black w-3 h-3 rounded-full scale-animation" />
+      </div>
+      <div class="flex flex-col justify-center items-center gap-6 flex-1 inner-container" v-else>
+        <ai-image :src="app.logo" :alt="app.name" class="w-14 h-14 rounded-xl" />
+        <div class="text-gray-700 text-lg">
+          {{ app.name }}
         </div>
       </div>
-    </div>
+    </ai-spin>
     <div class="inner-container sticky bottom-0">
       <div class="px-2 flex justify-between">
         <div
@@ -457,7 +562,7 @@ function regenerate(idx: number) {
         </div>
       </div>
       <div
-        class=" mt-2 px-1.5 py-1 flex gap-4 items-end rounded-[1.5rem] border bg-[#fafafa] question-input shadow-xl shadow-gray-200 "
+        class=" mt-2 px-1.5 py-1 flex items-end rounded-[1.5rem] border bg-[#fafafa] question-input shadow-xl shadow-gray-200"
       >
         <a-textarea
           class="flex-1 !px-2"
@@ -467,7 +572,7 @@ function regenerate(idx: number) {
           v-model="updateMsgStatus.text"
           @keydown.enter="updateMsg"
           ref="updateMsgInput"
-          auto-size
+          :auto-size="{maxRows: 20}"
         />
         <a-textarea
           class="flex-1 !px-2"
@@ -477,12 +582,13 @@ function regenerate(idx: number) {
           v-model="conversation.inputMessage"
           @keydown.enter="sendMsg"
           ref="msgInput"
-          auto-size
+          :auto-size="{maxRows: 20}"
         />
         <button
           class="bg-black text-white text-lg rounded-full my-0.5 !w-8 !h-8 flex justify-center items-center"
+          :class="{'!bg-gray-500 !cursor-not-allowed': chatting}"
           @click="() => {
-            if (updateMsgStatus.id ) updateMsg()
+            if (updateMsgStatus.id) updateMsg()
             else sendMsg()
           } "
         >
@@ -508,5 +614,18 @@ function regenerate(idx: number) {
   .arco-textarea-focus {
     @apply !shadow-transparent;
   }
+}
+
+@keyframes scale {
+  0%, 100% {
+    transform: scale(1.2);
+  }
+  50% {
+    transform: scale(0.8);
+  }
+}
+
+.scale-animation {
+  animation: scale 1s infinite;
 }
 </style>

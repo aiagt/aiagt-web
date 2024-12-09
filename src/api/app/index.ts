@@ -13,7 +13,7 @@ export async function listAppAPI(req: ListAppReq): Promise<ListAppResp> {
   return Promise.resolve(resp.data)
 }
 
-export async function getAppAPI(id: number, onError?: (err: any) => void): Promise<GetAppByIDResp> {
+export async function getAppAPI(id: string, onError?: (err: any) => void): Promise<GetAppByIDResp> {
   const resp = await get(`/app/${id}`, undefined, onError)
   return Promise.resolve(resp.data)
 }

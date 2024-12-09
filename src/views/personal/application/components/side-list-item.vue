@@ -13,7 +13,7 @@ const showInner = ref(props.defaultShowInner)
 <template>
   <ai-list-item
     class="!rounded-lg !px-1 hover:!bg-[#eeeeee] side-list-item"
-    inner-class="px-1 py-3"
+    inner-class="px-1 py-3 text-gray-800"
     :class="{'!cursor-not-allowed': disabled}"
   >
     <div class="flex flex-col gap-2 w-full">

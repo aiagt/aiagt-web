@@ -7,7 +7,7 @@ import { reactive, watch } from 'vue'
 
 const appStore = useApplicationStore()
 
-const labelValues = reactive([] as (number | string)[])
+const labelValues = reactive([] as (BigInt | string)[])
 
 watch(appStore.inputAppInfo, () => {
   labelValues.splice(0, labelValues.length)

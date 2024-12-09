@@ -62,7 +62,12 @@
         @apply text-xs w-full text-wrap;
 
         .code-language {
-            @apply rounded-t-lg bg-[#fafbfc] border-b border-gray-200 px-4.5 py-[0.625rem] text-black;
+            @apply rounded-t-lg bg-[#fafbfc] border-b border-gray-200 px-4.5 py-[0.35rem] text-gray-700;
+            @apply flex justify-between items-center;
+
+            .code-copy {
+                @apply rounded-md hover:bg-gray-100 active:bg-gray-200 transition p-[0.325rem];
+            }
         }
 
         .code-box {
@@ -93,20 +98,24 @@
 
     /* title */
 
+    h1 {
+        @apply text-xl;
+    }
+
     h2 {
-        @apply text-2xl my-[0.5rem];
+        @apply text-lg my-[0.5rem];
     }
 
     h3 {
-        @apply text-xl my-[0.4rem];
+        @apply text-lg !text-[16px] my-[0.4rem];
     }
 
     h4 {
-        @apply text-lg my-[0.3rem];
+        @apply text-[16px] my-[0.3rem];
     }
 
     h5 {
-        @apply text-lg text-[16px] my-[0.2rem];
+        @apply text-[14px] my-[0.2rem];
     }
 
     h6 {
