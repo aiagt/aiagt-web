@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { asset } from '@/models/assets'
 
 const props = withDefaults(defineProps<{
@@ -8,11 +8,14 @@ const props = withDefaults(defineProps<{
   round?: string;
   borderSize?: string;
   borderColor?: string;
+  allowPreview?: boolean;
 }>(), {})
 
 const src = computed(() => {
   return asset(props.src)
 })
+
+const showPreview = ref(false)
 </script>
 
 <template>
@@ -22,8 +25,14 @@ const src = computed(() => {
     v-if="src?.length"
     v-bind="$attrs"
     style="border-style: solid"
+    :class="{'cursor-pointer': allowPreview}"
+    @click="() => { if (allowPreview) showPreview = true }"
   />
   <div v-else v-bind="$attrs" />
+  <a-image-preview
+    :src="src"
+    v-model:visible="showPreview"
+  />
 </template>
 
 <style scoped>

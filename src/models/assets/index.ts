@@ -1,6 +1,7 @@
 export interface UploadAssetResp {
   file_name: string;
   file_path: string;
+  file_ext: string;
 }
 
 export function asset(src?: string): string | undefined {

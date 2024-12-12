@@ -11,6 +11,8 @@ import { clipboardCopy } from '@/utils/copy.ts'
 import { debounce } from '@arco-design/web-vue/es/_utils/debounce'
 import AiSpin from '@c/ai-spin/ai-spin.vue'
 import AiImage from '@c/ai-image/ai-image.vue'
+import { uploadAssetsAPI } from '@/api/assets'
+import { UploadAssetResp } from '@/models/assets'
 
 const props = defineProps<{
   app: App;
@@ -24,15 +26,17 @@ const emits = defineEmits(['newConversation'])
 const appInfo = reactive({} as App)
 const conversation = reactive({
   messages: [],
-  inputMessage: ''
+  inputMessage: '',
+  inputFiles: []
 } as {
   id?: BigInt;
   messages: Message[];
   inputMessage: string;
+  inputFiles: UploadAssetResp[];
 })
 
 interface messageGroup {
-  type: 'text' | 'other',
+  type: 'text' | 'file' | 'other',
   msg?: Message
   msgs?: messageGroupOtherMsg[]
 }
@@ -49,6 +53,11 @@ const messageGroups = computed(() => {
   for (let msg of conversation.messages) {
     if (msg.content.type === MessageType.TEXT) {
       result.push({ type: 'text', msg: msg })
+      continue
+    }
+
+    if (msg.content.type === MessageType.FILE) {
+      result.push({ type: 'file', msg: msg })
       continue
     }
 
@@ -335,6 +344,7 @@ function focusUpdateMsgInput() {
 }
 
 const msgInput = ref<HTMLInputElement | undefined>(undefined)
+const fileInput = ref<HTMLInputElement | undefined>(undefined)
 
 function focusMsgInput() {
   if (isMounted.value && msgInput.value) msgInput.value.focus()
@@ -362,12 +372,39 @@ function sendMsg(e?: Event) {
   const event = e as KeyboardEvent | undefined
 
   if (isSendEvent(event) && conversation.inputMessage.trim().length) {
-    chat([
-      {
-        type: MessageType.TEXT,
-        content: { text: { text: conversation.inputMessage } }
+    const messages: MessageContent[] = []
+    const now = NewTime()
+
+    for (const file of conversation.inputFiles) {
+      const msg = {
+        type: MessageType.FILE,
+        content: {
+          file: {
+            url: `${import.meta.env.VITE_ASSETS_HOST}/api/v1/assets/${file.file_path}`,
+            type: file.file_ext
+          }
+        }
       }
-    ])
+
+      messages.push(msg)
+      conversation.messages.push({
+        id: BigInt(0),
+        conversation_id: BigInt(0),
+        created_at: now,
+        updated_at: now,
+        role: MessageRole.USER,
+        content: msg
+      })
+    }
+
+    conversation.inputFiles.splice(0)
+
+    messages.push({
+      type: MessageType.TEXT,
+      content: { text: { text: conversation.inputMessage } }
+    })
+
+    chat(messages)
   }
 }
 
@@ -437,6 +474,16 @@ function regenerate(idx: number) {
     }
   }
 }
+
+async function uploadFile(event: Event) {
+  const target = event.target as HTMLInputElement
+  const file = target.files ? target.files[0] : null
+
+  if (file) {
+    const resp = await uploadAssetsAPI('chat_file', file)
+    conversation.inputFiles.push(resp)
+  }
+}
 </script>
 
 <template>
@@ -446,7 +493,7 @@ function regenerate(idx: number) {
         <div
           v-for="(mg, idx) of messageGroups"
           class="flex flex-col w-full"
-          :class="mg.type === 'text' && mg.msg?.role === MessageRole.USER ? 'items-end' : 'items-start'"
+          :class="mg.msg?.role === MessageRole.USER ? 'items-end' : 'items-start'"
         >
           <div
             v-if="mg.type === 'text' && mg.msg?.role === MessageRole.USER && mg.msg?.content.type === MessageType.TEXT"
@@ -460,6 +507,25 @@ function regenerate(idx: number) {
             v-html="mark(mg.msg?.content.content.text?.text || '')"
             @click="onClickMarked"
           />
+          <div
+            v-else-if="mg.type === 'file' && mg.msg?.role === MessageRole.USER && mg.msg?.content.type === MessageType.FILE"
+            class="px-3 py-2 rounded-xl bg-white border-[0.5px] flex flex-col"
+          >
+            <ai-image
+              :src="mg.msg.content.content?.file?.url"
+              v-if="['.png', '.jpeg', '.jpg', '.webp', '.gif'].includes(mg.msg.content.content?.file?.type || '')"
+              class="max-w-40 max-h-64 py-1"
+              allow-preview
+            />
+            <div
+              class="text-xs"
+              style="font-family: 'JetBrains Mono NL',serif"
+              v-else
+            >
+              <icon-file />
+              {{ mg.msg.content.content?.file?.type }}
+            </div>
+          </div>
           <div
             v-else-if="mg.type === 'other'"
             class="flex flex-col gap-1 p-1 rounded-xl border max-w-full bg-[#fafafa]"
@@ -562,38 +628,75 @@ function regenerate(idx: number) {
         </div>
       </div>
       <div
-        class=" mt-2 px-1.5 py-1 flex items-end rounded-[1.5rem] border bg-[#fafafa] question-input shadow-xl shadow-gray-200"
+        class="mt-2 px-1.5 py-1 rounded-[1.5rem] border bg-[#fafafa] question-input shadow-xl shadow-gray-200"
       >
-        <a-textarea
-          class="flex-1 !px-2"
-          placeholder="Edit your question"
-          size="large"
-          v-show="updateMsgStatus.id"
-          v-model="updateMsgStatus.text"
-          @keydown.enter="updateMsg"
-          ref="updateMsgInput"
-          :auto-size="{maxRows: 20}"
-        />
-        <a-textarea
-          class="flex-1 !px-2"
-          placeholder="Enter your question"
-          size="large"
-          v-show="!updateMsgStatus.id"
-          v-model="conversation.inputMessage"
-          @keydown.enter="sendMsg"
-          ref="msgInput"
-          :auto-size="{maxRows: 20}"
-        />
-        <button
-          class="bg-black text-white text-lg rounded-full my-0.5 !w-8 !h-8 flex justify-center items-center"
-          :class="{'!bg-gray-500 !cursor-not-allowed': chatting}"
-          @click="() => {
+        <div class="flex gap-1 px-3" v-show="conversation.inputFiles.length">
+          <div
+            v-for="(file, idx) of conversation.inputFiles"
+            class="pl-2 pr-1 py-1.5 rounded-xl bg-white border-[0.5px] flex items-center gap-2"
+          >
+            <ai-image
+              :src="file.file_path"
+              v-if="['.png', '.jpeg', '.jpg', '.webp', '.gif'].includes(file.file_ext || '')"
+              class="max-w-8 max-h-8"
+              allow-preview
+            />
+            <div
+              class=" text-blue-500 cursor-pointer hover:bg-gray-100 px-1 py-[0.075rem] rounded-[0.25rem]"
+              v-else
+            >
+              <icon-file />
+              {{ file.file_ext }}
+            </div>
+            <div
+              class="text-gray-500 text-[10px] rounded-full hover:bg-gray-200 w-3.5 h-3.5 flex justify-center items-center cursor-pointer"
+              @click="conversation.inputFiles.splice(idx, 1)"
+            >
+              <icon-close />
+            </div>
+          </div>
+        </div>
+        <div
+          class="flex items-end gap-2"
+        >
+          <a-textarea
+            class="flex-1 !px-2"
+            placeholder="Edit your question"
+            size="large"
+            v-show="updateMsgStatus.id"
+            v-model="updateMsgStatus.text"
+            @keydown.enter="updateMsg"
+            ref="updateMsgInput"
+            :auto-size="{maxRows: 20}"
+          />
+          <a-textarea
+            class="flex-1 !px-2"
+            placeholder="Enter your question"
+            size="large"
+            v-show="!updateMsgStatus.id"
+            v-model="conversation.inputMessage"
+            @keydown.enter="sendMsg"
+            ref="msgInput"
+            :auto-size="{maxRows: 20}"
+          />
+          <input type="file" ref="fileInput" class="hidden" @change="uploadFile" />
+          <button
+            class="h-7 w-7 m-0.5 text-[16px] text-gray-500 rounded-lg hover:bg-gray-100"
+            @click="fileInput?.click()"
+          >
+            <icon-plus />
+          </button>
+          <button
+            class="bg-black text-white text-lg rounded-full my-0.5 !w-8 !h-8 flex justify-center items-center ml-2"
+            :class="{'!bg-gray-500 !cursor-not-allowed': chatting}"
+            @click="() => {
             if (updateMsgStatus.id) updateMsg()
             else sendMsg()
           } "
-        >
-          <icon-arrow-up :stroke-width="6" stroke-linejoin="round" stroke-linecap="round" />
-        </button>
+          >
+            <icon-arrow-up :stroke-width="6" stroke-linejoin="round" stroke-linecap="round" />
+          </button>
+        </div>
       </div>
     </div>
   </div>
