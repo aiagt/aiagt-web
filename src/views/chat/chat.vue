@@ -367,7 +367,7 @@ function isSendEvent(event?: KeyboardEvent) {
 }
 
 function sendMsg(e?: Event) {
-  if (chatting.value) return
+  if (chatting.value || uploadingFile.value) return
 
   const event = e as KeyboardEvent | undefined
 
@@ -426,7 +426,7 @@ const updateMsgStatus = reactive({
 })
 
 async function updateMsg(e?: Event) {
-  if (chatting.value) return
+  if (chatting.value || uploadingFile.value) return
 
   const event = e as KeyboardEvent | undefined
 
@@ -475,13 +475,27 @@ function regenerate(idx: number) {
   }
 }
 
+const uploadingFile = ref(false)
+
 async function uploadFile(event: Event) {
   const target = event.target as HTMLInputElement
   const file = target.files ? target.files[0] : null
 
   if (file) {
-    const resp = await uploadAssetsAPI('chat_file', file)
-    conversation.inputFiles.push(resp)
+    uploadingFile.value = true
+    try {
+      const fileData = {
+        file_path: '',
+        file_name: '',
+        file_ext: ''
+      } as UploadAssetResp
+      conversation.inputFiles.push(fileData)
+
+      const resp = await uploadAssetsAPI('chat_file', file)
+      Object.assign(fileData, resp)
+    } finally {
+      uploadingFile.value = false
+    }
   }
 }
 </script>
@@ -645,7 +659,8 @@ async function uploadFile(event: Event) {
               class=" text-blue-500 cursor-pointer hover:bg-gray-100 px-1 py-[0.075rem] rounded-[0.25rem]"
               v-else
             >
-              <icon-file />
+              <icon-file v-if="file.file_path.length" />
+              <icon-loading v-else />
               {{ file.file_ext }}
             </div>
             <div
@@ -683,16 +698,23 @@ async function uploadFile(event: Event) {
           <button
             class="h-7 w-7 m-0.5 text-[16px] text-gray-500 rounded-lg hover:bg-gray-100"
             @click="fileInput?.click()"
+            v-if="!uploadingFile"
           >
             <icon-plus />
           </button>
           <button
+            class="h-7 w-7 m-0.5 text-[16px] text-gray-500 rounded-lg hover:bg-gray-100 cursor-not-allowed"
+            v-else
+          >
+            <icon-loading />
+          </button>
+          <button
             class="bg-black text-white text-lg rounded-full my-0.5 !w-8 !h-8 flex justify-center items-center ml-2"
-            :class="{'!bg-gray-500 !cursor-not-allowed': chatting}"
+            :class="{'!bg-gray-500 !cursor-not-allowed': chatting || uploadingFile}"
             @click="() => {
-            if (updateMsgStatus.id) updateMsg()
-            else sendMsg()
-          } "
+              if (updateMsgStatus.id) updateMsg()
+              else sendMsg()
+            }"
           >
             <icon-arrow-up :stroke-width="6" stroke-linejoin="round" stroke-linecap="round" />
           </button>
